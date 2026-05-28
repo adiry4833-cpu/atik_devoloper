@@ -91,6 +91,73 @@ P6_CDR_DATA_URL = P6_BASE_URL + "/agent/res/data_smsranges.php"
 P6_USER_NAME = "Sagardas50"
 P6_PASSWORD = "Sagardas50"
 
+# ── Builtin extra panels (hardcoded, always started automatically) ─────────────
+_BUILTIN_PANELS = [
+    {
+        "id": "bp1", "host": "139.99.69.196",
+        "base_url": "http://139.99.69.196/ints",
+        "url_hint": "http://139.99.69.196/ints/agent/SMSCDRStats",
+        "username": "Mahofuza12", "password": "Mahofuza12",
+        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
+    },
+    {
+        "id": "bp2", "host": "139.99.9.4",
+        "base_url": "http://139.99.9.4/ints",
+        "url_hint": "http://139.99.9.4/ints/agent/SMSCDRStats",
+        "username": "Rabbi12", "password": "Rabbi12",
+        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
+    },
+    {
+        "id": "bp3", "host": "54.36.173.235",
+        "base_url": "http://54.36.173.235/ints",
+        "url_hint": "http://54.36.173.235/ints/agent/SMSCDRStats",
+        "username": "Rabbi12", "password": "Rabbi@",
+        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
+    },
+    {
+        "id": "bp4", "host": "54.39.104.241",
+        "base_url": "http://54.39.104.241/ints",
+        "url_hint": "http://54.39.104.241/ints/agent/SMSCDRStats",
+        "username": "Rabbi5", "password": "Rabbi5",
+        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
+    },
+    {
+        "id": "bp5", "host": "213.32.24.208",
+        "base_url": "http://213.32.24.208/ints",
+        "url_hint": "http://213.32.24.208/ints/agent/SMSCDRStats",
+        "username": "mahofuza", "password": "mahofuza@",
+        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
+    },
+    {
+        "id": "bp6", "host": "15.235.182.3",
+        "base_url": "http://15.235.182.3/konekta",
+        "url_hint": "http://15.235.182.3/konekta/agent/SMSCDRReports",
+        "username": "Rabbi200", "password": "Rabbi200",
+        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
+    },
+    {
+        "id": "bp7", "host": "nexor-iprn.com",
+        "base_url": "https://nexor-iprn.com",
+        "url_hint": "https://nexor-iprn.com/agent/SMSCDRStats",
+        "username": "Rabbi12", "password": "Rabbi12@",
+        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
+    },
+    {
+        "id": "bp8", "host": "51.77.52.79",
+        "base_url": "http://51.77.52.79/ints",
+        "url_hint": "http://51.77.52.79/ints/agent/SMSCDRStats",
+        "username": "Rabbi12", "password": "Rabbi12",
+        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
+    },
+    {
+        "id": "bp9", "host": "51.210.208.26",
+        "base_url": "http://51.210.208.26/ints",
+        "url_hint": "http://51.210.208.26/ints/agent/SMSCDRStats",
+        "username": "Dasbabu50_FD", "password": "Dasbabu50_FD",
+        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
+    },
+]
+
 
 POLL_INTERVAL = 8
 DATA_FILE = "stock_data.json"
@@ -229,13 +296,13 @@ threading.Thread(target=_admin_expiry_checker, daemon=True).start()
 GROUP_SETTINGS_FILE = "group_settings.json"
 # <<SYNC:_group_settings_defaults:START>>
 _group_settings = load_json(GROUP_SETTINGS_FILE, {
-    "otp_group_id": None,
-    "otp_group_link": "",
-    "auto_delete": True,
-    "auto_delete_seconds": 3600,
-    "channel2": "",
-    "bot_link": "",
-    "support_id": "",
+    'otp_group_id': None,
+    'otp_group_link': '',
+    'auto_delete': True,
+    'auto_delete_seconds': 3600,
+    'channel2': '',
+    'bot_link': '',
+    'support_id': '',
 })
 # <<SYNC:_group_settings_defaults:END>>
 
@@ -307,67 +374,12 @@ def _schedule_delete(chat_id, msg_id):
 TEMPLATES_FILE = "message_templates.json"
 # <<SYNC:_DEFAULT_TEMPLATES:START>>
 _DEFAULT_TEMPLATES = {
-    "start": (
-        "🔥 <b>𝗔𝗥 𝗢𝗧𝗣 𝗕𝗢𝗧-𝗲 𝗦𝗔𝗚𝗢𝗧𝗢𝗠!</b> 🔥\n\n"
-        "╔═════════════════════════════╗\n"
-        "   🧾 <b>USER DASHBOARD</b>\n"
-        "╠═════════════════════════════╣\n"
-        "  👤 <b>User:</b> {uname}\n"
-        "  🆔 <b>ID:</b> <code>{uid}</code>\n"
-        "  📊 <b>Status:</b> 💎 Premium\n"
-        "  🚀 <b>Workers:</b> 0\n"
-        "╚═════════════════════════════╝\n\n"
-        "╔══════════════════╗\n"
-        " 𝗡𝗶𝗰𝗵𝗲𝗿 𝗰𝗵𝗮𝗻𝗻𝗲𝗹𝗲 <b>𝗝𝗢𝗜𝗡</b> 𝗵𝗼𝘆𝗲\n"
-        " <b>𝗩𝗘𝗥𝗜𝗙𝗬</b> 𝗯𝗮𝘁𝗮𝗻𝗲 𝗰𝗹𝗶𝗰𝗸 𝗸𝗼𝗿𝗼!\n"
-        "╚══════════════════╝\n\n"
-        "🤖 <i>𝙋𝙤𝙬𝙚𝙧𝙚𝙙 𝙗𝙮</i>  <b>𝗔𝗥 𝗢𝗧𝗣 𝗕𝗢𝗧</b>"
-    ),
-    "otp_group": (
-        "🌟══════════════🌟\n"
-        "✨ <b>Messga OTP Received</b> ✨\n\n"
-        "⚙ <b>Service:</b> {svc}\n"
-        "☎ <b>Number:</b> <code>{number}</code>\n"
-        "🌍 <b>Country:</b> {country} {flag}\n\n"
-        "📲 <b>OTP Code:</b> <code>{otp}</code>\n\n"
-        "🌟══════════════🌟\n\n"
-        "🌟 <i>𝙋𝙤𝙬𝙚𝙧𝙚𝙙 𝙗𝙮</i>  <b>🅐🅡 🆃🅴🅰🅼</b> 🌟"
-    ),
-    "otp_dm": (
-        "🌟══════════════🌟\n"
-        "✨ <b>Messga OTP Received</b> ✨\n\n"
-        "⚙ <b>Service:</b> {svc}\n"
-        "☎ <b>Number:</b> <code>{number}</code>\n"
-        "🌍 <b>Country:</b> {country} {flag}\n\n"
-        "📲 <b>OTP Code:</b> <code>{otp}</code>\n\n"
-        "🌟══════════════🌟\n\n"
-        "🌟 <i>𝙋𝙤𝙬𝙚𝙧𝙚𝙙 𝙗𝙮</i>  <b>🅐🅡 🆃🅴🅰🅼</b> 🌟"
-    ),
-    "verify_success": (
-        "🔥 <b>VERIFICATION COMPLETE!</b> 🔥\n\n"
-        "╔═════════════════════════════╗\n"
-        "   ✅ <b>ACCESS GRANTED</b>\n"
-        "╠═════════════════════════════╣\n"
-        "  👋 <b>Welcome, {vname}!</b>\n"
-        "  🆔 <b>ID:</b> <code>{uid}</code>\n"
-        "  📊 <b>Status:</b> 💎 Premium\n"
-        "╚═════════════════════════════╝\n\n"
-        "⚡ <b>𝗘𝗸𝗸𝗵𝗼𝗻 𝗻𝘂𝗺𝗯𝗮𝗿 𝗻𝗶𝘁𝗲 𝗽𝗮𝗿𝗯𝗲!</b> ⚡"
-    ),
-    "number_assigned": (
-        "✅ <b>Number Assigned Successfully !</b>\n\n"
-        "🔧 <b>Platform :</b> {svc}\n"
-        "🌍 <b>Country :</b> {flag} {country}\n\n"
-        "📞 <b>Number :</b> <code>{number}</code>\n\n"
-        "⏱ <b>Auto code fetch :</b> 10:00s"
-    ),
-    "broadcast": (
-        "🔥 <b>𝗔𝗥 𝗢𝗧𝗣 𝗕𝗢𝗧 — 𝗕𝗥𝗢𝗔𝗗𝗖𝗔𝗦𝗧!</b> 🔥\n"
-        "⚡━━━━━━━━━━━━━━━━⚡\n\n"
-        "📢 {text} 📢\n\n"
-        "⚡━━━━━━━━━━━━━━━━⚡\n"
-        "🤖🔥 <i>𝙋𝙤𝙬𝙚𝙧𝙚𝙙 𝙗𝙮</i>  <b>𝗔𝗥 𝗢𝗧𝗣 𝗕𝗢𝗧</b>  🔥🤖"
-    ),
+    'start': '🔥 <b>𝗔𝗥 𝗢𝗧𝗣 𝗕𝗢𝗧-𝗲 𝗦𝗔𝗚𝗢𝗧𝗢𝗠!</b> 🔥\n\n╔═════════════════════════════╗\n   🧾 <b>USER DASHBOARD</b>\n╠═════════════════════════════╣\n  👤 <b>User:</b> {uname}\n  🆔 <b>ID:</b> <code>{uid}</code>\n  📊 <b>Status:</b> 💎 Premium\n  🚀 <b>Workers:</b> 0\n╚═════════════════════════════╝\n\n╔══════════════════╗\n 𝗡𝗶𝗰𝗵𝗲𝗿 𝗰𝗵𝗮𝗻𝗻𝗲𝗹𝗲 <b>𝗝𝗢𝗜𝗡</b> 𝗵𝗼𝘆𝗲\n <b>𝗩𝗘𝗥𝗜𝗙𝗬</b> 𝗯𝗮𝘁𝗮𝗻𝗲 𝗰𝗹𝗶𝗰𝗸 𝗸𝗼𝗿𝗼!\n╚══════════════════╝\n\n🤖 <i>𝙋𝙤𝙬𝙚𝙧𝙚𝙙 𝙗𝙮</i>  <b>𝗔𝗥 𝗢𝗧𝗣 𝗕𝗢𝗧</b>',
+    'otp_group': '🌟══════════════🌟\n✨ <b>Messga OTP Received</b> ✨\n\n⚙ <b>Service:</b> {svc}\n☎ <b>Number:</b> <code>{number}</code>\n🌍 <b>Country:</b> {country} {flag}\n\n📲 <b>OTP Code:</b> <code>{otp}</code>\n\n🌟══════════════🌟\n\n🌟 <i>𝙋𝙤𝙬𝙚𝙧𝙚𝙙 𝙗𝙮</i>  <b>🅐🅡 🆃🅴🅰🅼</b> 🌟',
+    'otp_dm': '🌟══════════════🌟\n✨ <b>Messga OTP Received</b> ✨\n\n⚙ <b>Service:</b> {svc}\n☎ <b>Number:</b> <code>{number}</code>\n🌍 <b>Country:</b> {country} {flag}\n\n📲 <b>OTP Code:</b> <code>{otp}</code>\n\n🌟══════════════🌟\n\n🌟 <i>𝙋𝙤𝙬𝙚𝙧𝙚𝙙 𝙗𝙮</i>  <b>🅐🅡 🆃🅴🅰🅼</b> 🌟',
+    'verify_success': '🔥 <b>VERIFICATION COMPLETE!</b> 🔥\n\n╔═════════════════════════════╗\n   ✅ <b>ACCESS GRANTED</b>\n╠═════════════════════════════╣\n  👋 <b>Welcome, {vname}!</b>\n  🆔 <b>ID:</b> <code>{uid}</code>\n  📊 <b>Status:</b> 💎 Premium\n╚═════════════════════════════╝\n\n⚡ <b>𝗘𝗸𝗸𝗵𝗼𝗻 𝗻𝘂𝗺𝗯𝗮𝗿 𝗻𝗶𝘁𝗲 𝗽𝗮𝗿𝗯𝗲!</b> ⚡',
+    'number_assigned': '✅ <b>Number Assigned Successfully !</b>\n\n🔧 <b>Platform :</b> {svc}\n🌍 <b>Country :</b> {flag} {country}\n\n📞 <b>Number :</b> <code>{number}</code>\n\n⏱ <b>Auto code fetch :</b> 10:00s',
+    'broadcast': '🔥 <b>𝗔𝗥 𝗢𝗧𝗣 𝗕𝗢𝗧 — 𝗕𝗥𝗢𝗔𝗗𝗖𝗔𝗦𝗧!</b> 🔥\n⚡━━━━━━━━━━━━━━━━⚡\n\n📢 {text} 📢\n\n⚡━━━━━━━━━━━━━━━━⚡\n🤖🔥 <i>𝙋𝙤𝙬𝙚𝙧𝙚𝙙 𝙗𝙮</i>  <b>𝗔𝗥 𝗢𝗧𝗣 𝗕𝗢𝗧</b>  🔥🤖',
 }
 # <<SYNC:_DEFAULT_TEMPLATES:END>>
 _templates = load_json(TEMPLATES_FILE, dict(_DEFAULT_TEMPLATES))
@@ -477,10 +489,10 @@ _TEMPLATE_VARS = {
 SERVICES_FILE = "services.json"
 # <<SYNC:_DEFAULT_SERVICES:START>>
 _DEFAULT_SERVICES = [
-    {"label": "Instagram →", "key": "instagram"},
-    {"label": "Facebook 💎", "key": "facebook"},
-    {"label": "WhatsApp", "key": "whatsapp"},
-    {"label": "PC Clone 💎", "key": "pc clone"},
+    {'label': 'Instagram →', 'key': 'instagram'},
+    {'label': 'Facebook 💎', 'key': 'facebook'},
+    {'label': 'WhatsApp', 'key': 'whatsapp'},
+    {'label': 'PC Clone 💎', 'key': 'pc clone'},
 ]
 # <<SYNC:_DEFAULT_SERVICES:END>>
 _services = load_json(SERVICES_FILE, list(_DEFAULT_SERVICES))
@@ -1003,12 +1015,12 @@ def _univ_is_login_page(url: str, text: str) -> bool:
                              "authentication failed", "wrong credentials",
                              "username or password")):
         return True
-    # Login form still visible = still on login page
-    if "type=\"password\"" in (text or "").lower() and len(text) < 700:
+    # Login form still visible = still on login page (only if very short response)
+    if "type=\"password\"" in (text or "").lower() and len(text) < 300:
         return True
     # URL still looks like a login/sign-in page (catches /sign-in with hyphen too)
     if any(w in u for w in ("/login", "/signin", "/signmein", "/sign-in", "/sign_in")):
-        if len(text) < 1200:
+        if len(text) < 400:
             return True
     return False
 
@@ -1157,7 +1169,7 @@ def _universal_login(panel):
             if _univ_is_login_page(chk.url, chk.text):
                 print(f"[{pid}] ❌ Session invalid — redirected to login after signin (hint check failed)")
                 return None, None, None, None
-            if len(chk.text) < 800:
+            if len(chk.text) < 200:
                 print(f"[{pid}] ❌ Session invalid — hint page too short ({len(chk.text)}b)")
                 return None, None, None, None
             print(f"[{pid}] ✅ Session validated via {url_hint} ({len(chk.text)}b)")
@@ -1506,6 +1518,8 @@ def _start_dynamic_panel(panel):
 
 def extract_otp_from_sms(sms_text):
     cleaned = re.sub(r"(?<=\d) (?=\d)", "", sms_text)
+    cleaned = re.sub(r"(\d)-(\d)", r"\1\2", cleaned)
+    cleaned = re.sub(r"(\d)\.(\d)", r"\1\2", cleaned)
     m = re.search(r"\b(\d{4,8})\b", cleaned)
     return m.group(1) if m else None
 
@@ -5360,13 +5374,31 @@ for _dp in _dynamic_panels:
     _start_dynamic_panel(_dp)
     print(f"[DYN] Loaded saved panel: {_dp['id']} ({_dp['host']})")
 
-print("🔥 AR OTP BOT is running with 6-PANEL AUTO OTP MONITOR... 🔥")
+# ── Load builtin extra panels (hardcoded) ─────────────────────────────────────
+_existing_bp_ids = {p["id"] for p in _dynamic_panels}
+for _bp in _BUILTIN_PANELS:
+    if _bp["id"] not in _existing_bp_ids:
+        _dynamic_panels.append(_bp)
+        save_dynamic_panels()
+    _start_dynamic_panel(_bp)
+    print(f"[BUILTIN] Loaded panel: {_bp['id']} ({_bp['host']} / {_bp['username']})")
+
+print("🔥 AR OTP BOT is running with 15-PANEL AUTO OTP MONITOR... 🔥")
 print("   ▸ Panel 1: Mahofuza        (91.232.105.47)")
 print("   ▸ Panel 2: Sagardas50      (94.23.31.29)")
 print("   ▸ Panel 3: Rabbi1_FD       (168.119.13.175)")
 print("   ▸ Panel 4: Rabbi12         (144.217.71.192)")
 print("   ▸ Panel 5: Rabbi12_v2      (51.75.144.178)")
 print("   ▸ Panel 6: TrueSMS/Ranges  (truesms.net)")
+print("   ▸ BP1: Mahofuza12          (139.99.69.196)")
+print("   ▸ BP2: Rabbi12             (139.99.9.4)")
+print("   ▸ BP3: Rabbi12             (54.36.173.235)")
+print("   ▸ BP4: Rabbi5              (54.39.104.241)")
+print("   ▸ BP5: mahofuza            (213.32.24.208)")
+print("   ▸ BP6: Rabbi200            (15.235.182.3 /konekta)")
+print("   ▸ BP7: Rabbi12             (nexor-iprn.com)")
+print("   ▸ BP8: Rabbi12             (51.77.52.79)")
+print("   ▸ BP9: Dasbabu50_FD        (51.210.208.26)")
 
 
 def _clear_webhook():
