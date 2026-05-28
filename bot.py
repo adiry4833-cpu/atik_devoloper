@@ -1474,31 +1474,22 @@ def _univ_parse_row(row, engine):
     try:
         if not row:
             return None
-        # Normalize all cells to strings
         cells = [str(c).strip() for c in row]
-
-        # Standard INTS layout: [date, range, number, cli/service, client, sms, currency, payout]
-        # Try primary indices first
+        # Standard INTS layout: [date, range, number, cli/service, client, sms, ...]
+        # extract_otp_from_sms already enforces real-SMS validation (≥4 alpha chars)
         if len(cells) > 5:
             number  = cells[2]
             service = cells[3]
             sms_txt = cells[5]
-            otp_check = extract_otp_from_sms(sms_txt) if sms_txt else None
-            if number and sms_txt and otp_check:
+            if number and extract_otp_from_sms(sms_txt):
                 return number, service, sms_txt
-
-        # Fallback: scan ALL cells — find phone number + SMS-like text
-        phone_pat = re.compile(r"^\+?\d{7,15}$")
-        sms_pat   = re.compile(r"\d{4,8}")
-        found_num, found_svc, found_sms = "", "", ""
-        for i, c in enumerate(cells):
-            if not found_num and phone_pat.match(c):
-                found_num = c
-            elif not found_sms and len(c) > 8 and sms_pat.search(c):
-                found_sms = c
-                found_svc = cells[i - 1] if i > 0 else ""
-        if found_num and found_sms:
-            return found_num, found_svc, found_sms
+        # Shorter rows (some panels only have 5 cols)
+        if len(cells) > 4:
+            number  = cells[2]
+            service = cells[3]
+            sms_txt = cells[4]
+            if number and extract_otp_from_sms(sms_txt):
+                return number, service, sms_txt
     except Exception:
         pass
     return None
@@ -1536,6 +1527,12 @@ def _start_dynamic_panel(panel):
 
 
 def extract_otp_from_sms(sms_text):
+    if not sms_text:
+        return None
+    # Must have at least 1 letter — pure digit/symbol strings like "0012" or "0.00" are
+    # range codes / payout amounts, never real OTPs.  Also ignore very short garbage.
+    if len(sms_text) < 5 or not re.search(r"[a-zA-Z]", sms_text):
+        return None
     cleaned = re.sub(r"(?<=\d) (?=\d)", "", sms_text)
     cleaned = re.sub(r"(\d)-(\d)", r"\1\2", cleaned)
     cleaned = re.sub(r"(\d)\.(\d)", r"\1\2", cleaned)
@@ -4272,6 +4269,19 @@ def text_handler(message):
     elif txt == "📤 𝗣𝘂𝗿𝗮𝗻𝗼 𝗢𝗧𝗣 𝗚𝗿𝘂𝗽𝗲 𝗦𝗲𝗻𝗱" and uid in ADMIN_IDS:
         _resend_old_otps(message)
 
+    elif txt == "🛑 𝗣𝘂𝗿𝗮𝗻𝗼 𝗢𝗧𝗣 𝗕𝗼𝗻𝗱𝗵𝗼" and uid in ADMIN_IDS:
+        global _resend_stop, _resend_running
+        _resend_stop = True
+        if _resend_running:
+            bot.send_message(message.chat.id,
+                "🛑 <b>Resend stop signal pathano hoise!</b>\n"
+                "<i>Chal OTP send hoye gele bondho hobe.</i>",
+                parse_mode="HTML")
+        else:
+            bot.send_message(message.chat.id,
+                "ℹ️ <b>Kono resend cholthechhilo na.</b>",
+                parse_mode="HTML")
+
     elif txt == "🔍 𝗧𝗲𝘀𝘁 𝗣𝗮𝗻𝗲𝗹" and uid in ADMIN_IDS:
         _testpanel_state[uid] = {"step": "url", "data": {}}
         msg = bot.send_message(
@@ -5092,12 +5102,17 @@ def _show_remove_admin(message):
 _admin_panel_last: dict[int, float] = {}
 _admin_panel_lock = threading.Lock()
 
+# ── Resend stop flag ───────────────────────────────────────────────────────────
+_resend_running = False
+_resend_stop    = False
+
 
 def _resend_old_otps(message):
-    """Fetch current OTPs from ALL panels and forward them to the configured group."""
-    uid  = message.from_user.id
-    cid  = message.chat.id
-    grp  = get_admin_setting(uid, "otp_group_id", None) or get_otp_group_id()
+    """Fetch today's real OTPs from ALL panels and forward to group (max 50 total)."""
+    global _resend_running, _resend_stop
+    uid = message.from_user.id
+    cid = message.chat.id
+    grp = get_admin_setting(uid, "otp_group_id", None) or get_otp_group_id()
 
     if not grp:
         bot.send_message(cid,
@@ -5105,39 +5120,49 @@ def _resend_old_otps(message):
             parse_mode="HTML")
         return
 
+    if _resend_running:
+        bot.send_message(cid,
+            "⚠️ <b>Resend already cholche!</b>\n"
+            "🛑 <b>Purano OTP Bondho</b> button diye age bondo koro.",
+            parse_mode="HTML")
+        return
+
     wait_msg = bot.send_message(
         cid,
-        "⏳ <b>Sob panel theke OTP fetch korchi...</b>\n"
-        "<i>Ektu wait koro, sab panel probe hobe.</i>",
+        "⏳ <b>Sob panel theke ajer OTP fetch korchi...</b>\n"
+        "<i>(Shudhu real SMS OTP — fake/range data bade jabe)</i>",
         parse_mode="HTML",
     )
 
+    _resend_running = True
+    _resend_stop    = False
+
     def _do_resend():
+        global _resend_running, _resend_stop
         all_found = {}
 
-        # ── Static panels P1-P6 ──────────────────────────────────────────────
         static_fetchers = [
-            ("P1", fetch_panel1),
-            ("P2", fetch_panel2),
-            ("P3", fetch_panel3),
-            ("P4", fetch_panel4),
-            ("P5", fetch_panel5),
-            ("P6", fetch_panel6),
+            ("P1", fetch_panel1), ("P2", fetch_panel2),
+            ("P3", fetch_panel3), ("P4", fetch_panel4),
+            ("P5", fetch_panel5), ("P6", fetch_panel6),
         ]
         for pid, fetcher in static_fetchers:
+            if _resend_stop:
+                break
             try:
                 result = fetcher()
                 all_found.update(result)
-                print(f"[RESEND] {pid}: {len(result)} OTPs")
+                print(f"[RESEND] {pid}: {len(result)} real OTPs")
             except Exception as e:
                 print(f"[RESEND] {pid} error: {e}")
 
-        # ── Dynamic + builtin panels ─────────────────────────────────────────
         for panel in list(_dynamic_panels):
+            if _resend_stop:
+                break
             try:
                 result = _universal_fetch(panel)
                 all_found.update(result)
-                print(f"[RESEND] {panel['id']}: {len(result)} OTPs")
+                print(f"[RESEND] {panel['id']}: {len(result)} real OTPs")
             except Exception as e:
                 print(f"[RESEND] {panel['id']} error: {e}")
 
@@ -5146,41 +5171,53 @@ def _resend_old_otps(message):
         except Exception:
             pass
 
+        if _resend_stop:
+            bot.send_message(cid, "🛑 <b>Resend bondho kora hoise!</b>", parse_mode="HTML")
+            _resend_running = False
+            return
+
         if not all_found:
             bot.send_message(
                 cid,
-                "⚠️ <b>Kono OTP panel e nai!</b>\n"
-                "<i>Panel-e ajo kono SMS/OTP aase nai.</i>",
+                "⚠️ <b>Kono real OTP panel e nai!</b>\n"
+                "<i>Fake/range data baad dewa hoise. Shudhu real SMS OTP count hoise.</i>",
                 parse_mode="HTML",
             )
+            _resend_running = False
             return
 
-        total   = len(all_found)
-        sent    = 0
-        failed  = 0
+        MAX_SEND = 50
+        items  = list(all_found.values())[:MAX_SEND]
+        total  = len(all_found)
+        sent   = 0
+        failed = 0
 
         bot.send_message(
             cid,
-            f"📤 <b>{total}টা OTP paoa gese!</b> Group e pathano shuru...",
+            f"📤 <b>{total}টা real OTP paoa gese!</b>\n"
+            f"<i>Max {MAX_SEND}টা pathano hobe.</i>",
             parse_mode="HTML",
         )
 
-        for key, (number, otp_val, sms_txt, service) in all_found.items():
+        for number, otp_val, sms_txt, service in items:
+            if _resend_stop:
+                break
             try:
                 send_otp_message(grp, otp_val, number, "—", service)
                 sent += 1
-                time.sleep(0.35)   # avoid flood
+                time.sleep(0.4)
             except Exception as e:
                 failed += 1
-                print(f"[RESEND] Send error for {number}: {e}")
+                print(f"[RESEND] Send error {number}: {e}")
 
+        _resend_running = False
+        status_icon = "🛑 Bondho kora hoise!" if _resend_stop else "✅ Shesh!"
         bot.send_message(
             cid,
-            f"✅ <b>Resend Shesh!</b>\n\n"
-            f"📊 <b>Mোট OTP:</b> {total}\n"
-            f"✅ <b>Sent:</b> {sent}\n"
-            f"❌ <b>Failed:</b> {failed}\n\n"
-            f"<i>Uporer OTP gulo group e dekhte pabe.</i>",
+            f"{status_icon}\n\n"
+            f"📊 <b>Mোট real OTP:</b> {total}\n"
+            f"📤 <b>Sent:</b> {sent}\n"
+            f"❌ <b>Failed:</b> {failed}",
             parse_mode="HTML",
         )
 
@@ -5203,7 +5240,7 @@ def _go_admin_panel(message, text="🔥 <b>ADMIN PANEL</b>"):
     m_admin.add("➕ 𝗔𝗱𝗱 𝗣𝗮𝗻𝗲𝗹", "🗑️ 𝗥𝗲𝗺𝗼𝘃𝗲 𝗣𝗮𝗻𝗲𝗹")
     m_admin.add("➕ 𝗔𝗱𝗱 𝗦𝗲𝗿𝘃𝗶𝗰𝗲", "🗑️ 𝗥𝗲𝗺𝗼𝘃𝗲 𝗦𝗲𝗿𝘃𝗶𝗰𝗲")
     m_admin.add("📊 𝗣𝗮𝗻𝗲𝗹𝘀", "🔍 𝗧𝗲𝘀𝘁 𝗣𝗮𝗻𝗲𝗹")
-    m_admin.add("📤 𝗣𝘂𝗿𝗮𝗻𝗼 𝗢𝗧𝗣 𝗚𝗿𝘂𝗽𝗲 𝗦𝗲𝗻𝗱")
+    m_admin.add("📤 𝗣𝘂𝗿𝗮𝗻𝗼 𝗢𝗧𝗣 𝗚𝗿𝘂𝗽𝗲 𝗦𝗲𝗻𝗱", "🛑 𝗣𝘂𝗿𝗮𝗻𝗼 𝗢𝗧𝗣 𝗕𝗼𝗻𝗱𝗵𝗼")
     if is_super_admin(uid):
         m_admin.add("👑 𝗔𝗱𝗱 𝗔𝗱𝗺𝗶𝗻", "🗑️ 𝗥𝗲𝗺𝗼𝘃𝗲 𝗔𝗱𝗺𝗶𝗻")
         m_admin.add("📞 𝗦𝘂𝗽𝗽𝗼𝗿𝘁 𝗜𝗗")
