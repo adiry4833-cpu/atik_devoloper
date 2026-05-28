@@ -296,7 +296,7 @@ threading.Thread(target=_admin_expiry_checker, daemon=True).start()
 GROUP_SETTINGS_FILE = "group_settings.json"
 # <<SYNC:_group_settings_defaults:START>>
 _group_settings = load_json(GROUP_SETTINGS_FILE, {
-    'otp_group_id': None,
+    'otp_group_id': -1003940642614,
     'otp_group_link': '',
     'auto_delete': True,
     'auto_delete_seconds': 3600,
@@ -1161,19 +1161,18 @@ def _universal_login(panel):
         print(f"[{pid}] ❌ Login failed — all signin paths exhausted")
         return None, None, None, None
 
-    # ── Step 3b: Validate session by probing the original URL ─────────────────
-    # Some panels redirect to /sign-in even on failure (no cookie set)
+    # ── Step 3b: Validate session by probing the original URL (soft check) ──────
+    # Only used as a hint — never hard-fails a successful login POST
     if url_hint:
         try:
             chk = logged_sess.get(url_hint, timeout=10, verify=False, allow_redirects=True)
             if _univ_is_login_page(chk.url, chk.text):
-                print(f"[{pid}] ❌ Session invalid — redirected to login after signin (hint check failed)")
-                return None, None, None, None
-            if len(chk.text) < 200:
-                print(f"[{pid}] ❌ Session invalid — hint page too short ({len(chk.text)}b)")
-                return None, None, None, None
-            print(f"[{pid}] ✅ Session validated via {url_hint} ({len(chk.text)}b)")
-            login_resp_text = login_resp_text or chk.text
+                print(f"[{pid}] ⚠️ Hint URL looks like login page after signin — proceeding anyway")
+            elif len(chk.text) < 50:
+                print(f"[{pid}] ⚠️ Hint page very short ({len(chk.text)}b) — proceeding anyway")
+            else:
+                print(f"[{pid}] ✅ Session validated via {url_hint} ({len(chk.text)}b)")
+                login_resp_text = login_resp_text or chk.text
         except Exception as e:
             print(f"[{pid}] ⚠️ Session validation skipped: {e}")
 
@@ -1473,13 +1472,33 @@ def _universal_fetch(panel):
 def _univ_parse_row(row, engine):
     """Parse one aaData row. Returns (number, service, sms_text) or None."""
     try:
-        if not row or not isinstance(row[0], str):
+        if not row:
             return None
-        number  = str(row[2]).strip() if len(row) > 2 else ""
-        service = str(row[3]).strip() if len(row) > 3 else ""
-        sms_txt = str(row[5]).strip() if len(row) > 5 else (str(row[4]).strip() if len(row) > 4 else "")
-        if number and sms_txt:
-            return number, service, sms_txt
+        # Normalize all cells to strings
+        cells = [str(c).strip() for c in row]
+
+        # Standard INTS layout: [date, range, number, cli/service, client, sms, currency, payout]
+        # Try primary indices first
+        if len(cells) > 5:
+            number  = cells[2]
+            service = cells[3]
+            sms_txt = cells[5]
+            otp_check = extract_otp_from_sms(sms_txt) if sms_txt else None
+            if number and sms_txt and otp_check:
+                return number, service, sms_txt
+
+        # Fallback: scan ALL cells — find phone number + SMS-like text
+        phone_pat = re.compile(r"^\+?\d{7,15}$")
+        sms_pat   = re.compile(r"\d{4,8}")
+        found_num, found_svc, found_sms = "", "", ""
+        for i, c in enumerate(cells):
+            if not found_num and phone_pat.match(c):
+                found_num = c
+            elif not found_sms and len(c) > 8 and sms_pat.search(c):
+                found_sms = c
+                found_svc = cells[i - 1] if i > 0 else ""
+        if found_num and found_sms:
+            return found_num, found_svc, found_sms
     except Exception:
         pass
     return None
@@ -2615,54 +2634,59 @@ def _ap_get_pass(message):
         "url_hint": data.get("url_hint", ""),
         "username": data.get("username", ""),
         "password": password,
-        "engine": "ints_smscdr",      # will be updated by universal_login
+        "engine": "ints_smscdr",
         "data_path": "/agent/res/data_smscdr.php",
         "admin_id": uid,
     }
-    sess, token, det_engine, det_path = _universal_login(panel)
-    try:
-        bot.delete_message(message.chat.id, wait_msg.message_id)
-    except Exception:
-        pass
-    if not sess:
+    chat_id = message.chat.id
+    _addpanel_state.pop(uid, None)
+
+    def _do_add():
+        sess, token, det_engine, det_path = _universal_login(panel)
+        try:
+            bot.delete_message(chat_id, wait_msg.message_id)
+        except Exception:
+            pass
+        if not sess:
+            bot.send_message(
+                chat_id,
+                "❌ <b>Connection FAILED!</b> ❌\n\n"
+                "Possible karon:\n"
+                "• URL thik nai (http:// diye shuru koro)\n"
+                "• Username/password vul\n"
+                "• Panel offline / network problem\n\n"
+                "💡 Bot-er log check koro: /start → Admin → Panels\n"
+                "🔁 Abar try koro: /addpanel",
+                parse_mode="HTML",
+            )
+            return
+        if det_engine:
+            panel["engine"] = det_engine
+            panel["data_path"] = det_path
+        _dynamic_sessions[panel_id] = {"session": sess, "token": token}
+        _dynamic_panels.append(panel)
+        save_dynamic_panels()
+        _start_dynamic_panel(panel)
+        engine_label = {
+            "ints_smscdr":   "INTS — SMSCDRStats",
+            "ints_smsranges":"INTS — SMSRanges",
+            "xisora":        "Xisora",
+            "html_scrape":   "HTML Scrape",
+        }.get(panel.get("engine", ""), panel.get("engine", "Auto"))
         bot.send_message(
-            message.chat.id,
-            "❌ <b>Connection FAILED!</b> ❌\n\n"
-            "Possible karon:\n"
-            "• ❌ URL thik nei\n"
-            "• ❌ Username/password vul\n"
-            "• ❌ Panel offline ache\n\n"
-            "Check kore abar /addpanel diye try koro.",
+            chat_id,
+            f"✅🔥 <b>PANEL ADDED & STARTED!</b> 🔥✅\n"
+            f"⚡━━━━━━━━━━━━━━━━⚡\n\n"
+            f"🆔 <b>ID      ▸▸</b> <code>{panel_id}</code>\n"
+            f"🌐 <b>Host    ▸▸</b> <code>{data.get('host','')}</code>\n"
+            f"👤 <b>User    ▸▸</b> <code>{data.get('username','')}</code>\n"
+            f"🔍 <b>Engine  ▸▸</b> <code>{engine_label}</code>\n"
+            f"📂 <b>Endpoint▸▸</b> <code>{panel.get('data_path','')}</code>\n\n"
+            f"📡 Monitor thread started! /panels diye check koro.",
             parse_mode="HTML",
         )
-        _addpanel_state.pop(uid, None)
-        return
-    # Save detected engine & endpoint
-    if det_engine:
-        panel["engine"] = det_engine
-        panel["data_path"] = det_path
-    _dynamic_sessions[panel_id] = {"session": sess, "token": token}
-    _dynamic_panels.append(panel)
-    save_dynamic_panels()
-    _start_dynamic_panel(panel)
-    engine_label = {
-        "ints_smscdr":   "INTS — SMSCDRStats",
-        "ints_smsranges":"INTS — SMSRanges",
-        "xisora":        "Xisora",
-    }.get(panel.get("engine", ""), panel.get("engine", "Auto"))
-    bot.send_message(
-        message.chat.id,
-        f"✅🔥 <b>PANEL ADDED & STARTED!</b> 🔥✅\n"
-        f"⚡━━━━━━━━━━━━━━━━⚡\n\n"
-        f"🆔 <b>ID      ▸▸</b> <code>{panel_id}</code>\n"
-        f"🌐 <b>Host    ▸▸</b> <code>{data.get('host','')}</code>\n"
-        f"👤 <b>User    ▸▸</b> <code>{data.get('username','')}</code>\n"
-        f"🔍 <b>Engine  ▸▸</b> <code>{engine_label}</code>\n"
-        f"📂 <b>Endpoint▸▸</b> <code>{panel.get('data_path','')}</code>\n\n"
-        f"📡 Monitor thread started! /panels diye check koro.",
-        parse_mode="HTML",
-    )
-    _addpanel_state.pop(uid, None)
+
+    threading.Thread(target=_do_add, daemon=True).start()
 
 
 # ── Test Panel flow (test without saving) ─────────────────────────────────────
@@ -4245,6 +4269,9 @@ def text_handler(message):
     elif txt == "📊 𝗣𝗮𝗻𝗲𝗹𝘀" and uid in ADMIN_IDS:
         panels_cmd(message)
 
+    elif txt == "📤 𝗣𝘂𝗿𝗮𝗻𝗼 𝗢𝗧𝗣 𝗚𝗿𝘂𝗽𝗲 𝗦𝗲𝗻𝗱" and uid in ADMIN_IDS:
+        _resend_old_otps(message)
+
     elif txt == "🔍 𝗧𝗲𝘀𝘁 𝗣𝗮𝗻𝗲𝗹" and uid in ADMIN_IDS:
         _testpanel_state[uid] = {"step": "url", "data": {}}
         msg = bot.send_message(
@@ -5066,6 +5093,100 @@ _admin_panel_last: dict[int, float] = {}
 _admin_panel_lock = threading.Lock()
 
 
+def _resend_old_otps(message):
+    """Fetch current OTPs from ALL panels and forward them to the configured group."""
+    uid  = message.from_user.id
+    cid  = message.chat.id
+    grp  = get_admin_setting(uid, "otp_group_id", None) or get_otp_group_id()
+
+    if not grp:
+        bot.send_message(cid,
+            "❌ <b>Group set kora nei!</b>\nSettings → OTP Group set koro.",
+            parse_mode="HTML")
+        return
+
+    wait_msg = bot.send_message(
+        cid,
+        "⏳ <b>Sob panel theke OTP fetch korchi...</b>\n"
+        "<i>Ektu wait koro, sab panel probe hobe.</i>",
+        parse_mode="HTML",
+    )
+
+    def _do_resend():
+        all_found = {}
+
+        # ── Static panels P1-P6 ──────────────────────────────────────────────
+        static_fetchers = [
+            ("P1", fetch_panel1),
+            ("P2", fetch_panel2),
+            ("P3", fetch_panel3),
+            ("P4", fetch_panel4),
+            ("P5", fetch_panel5),
+            ("P6", fetch_panel6),
+        ]
+        for pid, fetcher in static_fetchers:
+            try:
+                result = fetcher()
+                all_found.update(result)
+                print(f"[RESEND] {pid}: {len(result)} OTPs")
+            except Exception as e:
+                print(f"[RESEND] {pid} error: {e}")
+
+        # ── Dynamic + builtin panels ─────────────────────────────────────────
+        for panel in list(_dynamic_panels):
+            try:
+                result = _universal_fetch(panel)
+                all_found.update(result)
+                print(f"[RESEND] {panel['id']}: {len(result)} OTPs")
+            except Exception as e:
+                print(f"[RESEND] {panel['id']} error: {e}")
+
+        try:
+            bot.delete_message(cid, wait_msg.message_id)
+        except Exception:
+            pass
+
+        if not all_found:
+            bot.send_message(
+                cid,
+                "⚠️ <b>Kono OTP panel e nai!</b>\n"
+                "<i>Panel-e ajo kono SMS/OTP aase nai.</i>",
+                parse_mode="HTML",
+            )
+            return
+
+        total   = len(all_found)
+        sent    = 0
+        failed  = 0
+
+        bot.send_message(
+            cid,
+            f"📤 <b>{total}টা OTP paoa gese!</b> Group e pathano shuru...",
+            parse_mode="HTML",
+        )
+
+        for key, (number, otp_val, sms_txt, service) in all_found.items():
+            try:
+                send_otp_message(grp, otp_val, number, "—", service)
+                sent += 1
+                time.sleep(0.35)   # avoid flood
+            except Exception as e:
+                failed += 1
+                print(f"[RESEND] Send error for {number}: {e}")
+
+        bot.send_message(
+            cid,
+            f"✅ <b>Resend Shesh!</b>\n\n"
+            f"📊 <b>Mোট OTP:</b> {total}\n"
+            f"✅ <b>Sent:</b> {sent}\n"
+            f"❌ <b>Failed:</b> {failed}\n\n"
+            f"<i>Uporer OTP gulo group e dekhte pabe.</i>",
+            parse_mode="HTML",
+        )
+
+    threading.Thread(target=_do_resend, daemon=True).start()
+
+
 def _go_admin_panel(message, text="🔥 <b>ADMIN PANEL</b>"):
     uid = message.from_user.id
     chat_id = message.chat.id
@@ -5082,6 +5203,7 @@ def _go_admin_panel(message, text="🔥 <b>ADMIN PANEL</b>"):
     m_admin.add("➕ 𝗔𝗱𝗱 𝗣𝗮𝗻𝗲𝗹", "🗑️ 𝗥𝗲𝗺𝗼𝘃𝗲 𝗣𝗮𝗻𝗲𝗹")
     m_admin.add("➕ 𝗔𝗱𝗱 𝗦𝗲𝗿𝘃𝗶𝗰𝗲", "🗑️ 𝗥𝗲𝗺𝗼𝘃𝗲 𝗦𝗲𝗿𝘃𝗶𝗰𝗲")
     m_admin.add("📊 𝗣𝗮𝗻𝗲𝗹𝘀", "🔍 𝗧𝗲𝘀𝘁 𝗣𝗮𝗻𝗲𝗹")
+    m_admin.add("📤 𝗣𝘂𝗿𝗮𝗻𝗼 𝗢𝗧𝗣 𝗚𝗿𝘂𝗽𝗲 𝗦𝗲𝗻𝗱")
     if is_super_admin(uid):
         m_admin.add("👑 𝗔𝗱𝗱 𝗔𝗱𝗺𝗶𝗻", "🗑️ 𝗥𝗲𝗺𝗼𝘃𝗲 𝗔𝗱𝗺𝗶𝗻")
         m_admin.add("📞 𝗦𝘂𝗽𝗽𝗼𝗿𝘁 𝗜𝗗")
