@@ -3213,6 +3213,15 @@ def _iva_do_connect(message, cookie_str=""):
 _iva_cookie_update_state: dict = {}
 
 
+def _iva_find_panel(panel_id=None):
+    """Find any iva_sms panel — checks dynamic_panels AND _BUILTIN_PANELS."""
+    all_panels = list(_dynamic_panels) + [p for p in _BUILTIN_PANELS if p not in _dynamic_panels]
+    for p in all_panels:
+        if p.get("engine") == "iva_sms" and (not panel_id or p["id"] == panel_id):
+            return p
+    return None
+
+
 @bot.message_handler(commands=["ivacookie"])
 def _iva_cookie_cmd(message):
     uid = message.from_user.id
@@ -3221,29 +3230,30 @@ def _iva_cookie_cmd(message):
     args = message.text.split()[1:] if message.text else []
     panel_id = args[0] if args else None
 
-    # Find the IVA panel
-    iva_panel = None
-    for p in _dynamic_panels:
-        if p.get("engine") == "iva_sms" and (not panel_id or p["id"] == panel_id):
-            iva_panel = p
-            break
+    iva_panel = _iva_find_panel(panel_id)
 
     if not iva_panel:
         bot.send_message(message.chat.id,
             "❌ <b>IVA SMS panel paoa jai nai.</b>\n"
-            "Prothome Add Panel diye ivasms.com add koro.",
+            "Bot restart koro — bp10 auto-load hobe.",
             parse_mode="HTML")
         return
 
     _iva_cookie_update_state[uid] = iva_panel["id"]
     msg = bot.send_message(
         message.chat.id,
-        f"🔄 <b>IVA SMS Cookie Update</b>\n"
-        f"Panel: <code>{iva_panel['id']}</code>\n\n"
-        f"Browser theke notun cookie copy kore paste koro:\n"
-        f"<code>cf_clearance=VALUE; laravel_session=VALUE</code>",
+        f"🍪 <b>IVA SMS — Cookie Login</b>\n"
+        f"Panel ID: <code>{iva_panel['id']}</code>\n\n"
+        f"📋 <b>Steps:</b>\n"
+        f"1. Chrome/Firefox-এ <a href='https://ivasms.com/portal/login'>ivasms.com</a> login করো\n"
+        f"2. F12 → Application → Cookies → ivasms.com\n"
+        f"3. <code>laravel_session</code> value copy করো\n"
+        f"4. নিচে paste করো:\n\n"
+        f"<code>laravel_session=XXXXXXX</code>\n\n"
+        f"<i>(cf_clearance থাকলে সেটাও add করো: <code>cf_clearance=XXX; laravel_session=XXX</code>)</i>",
         reply_markup=_back_admin_kb(),
         parse_mode="HTML",
+        disable_web_page_preview=True,
     )
     bot.register_next_step_handler(msg, _iva_cookie_update_step)
 
@@ -3259,21 +3269,54 @@ def _iva_cookie_update_step(message):
         return
     cookie_str = (message.text or "").strip()
     if not cookie_str or "=" not in cookie_str:
-        bot.send_message(message.chat.id, "❌ Valid cookie format dao.", parse_mode="HTML")
+        bot.send_message(message.chat.id, "❌ Valid cookie format dao (laravel_session=XXX).", parse_mode="HTML")
         return
 
+    # Update in dynamic_panels first
+    updated = False
     for p in _dynamic_panels:
         if p["id"] == panel_id:
             p["cookie_str"] = cookie_str
             save_dynamic_panels()
-            _iva_scrapers.pop(panel_id, None)  # force re-login with new cookie
-            bot.send_message(
-                message.chat.id,
-                "✅ <b>Cookie updated!</b> Notun cookie diye connect korbe.",
-                parse_mode="HTML",
-            )
-            return
-    bot.send_message(message.chat.id, "❌ Panel paoa jai nai.", parse_mode="HTML")
+            updated = True
+            break
+
+    # Also update BUILTIN_PANELS in-memory (so _iva_login picks it up)
+    for p in _BUILTIN_PANELS:
+        if p["id"] == panel_id:
+            p["cookie_str"] = cookie_str
+            updated = True
+            break
+
+    if not updated:
+        bot.send_message(message.chat.id, "❌ Panel paoa jai nai.", parse_mode="HTML")
+        return
+
+    _iva_scrapers.pop(panel_id, None)  # force re-login with new cookie
+
+    wait_msg = bot.send_message(message.chat.id,
+        "⏳ <b>Notun cookie diye login korchi...</b>", parse_mode="HTML")
+
+    def _try_reconnect():
+        panel = _iva_find_panel(panel_id)
+        ok = _iva_login(panel) if panel else False
+        try:
+            bot.delete_message(message.chat.id, wait_msg.message_id)
+        except Exception:
+            pass
+        if ok:
+            bot.send_message(message.chat.id,
+                "✅🔥 <b>IVA SMS — Cookie login SUCCESSFUL!</b>\n"
+                "Panel ekhon active — OTP ashle group-e pathabe. 🟢",
+                parse_mode="HTML")
+        else:
+            bot.send_message(message.chat.id,
+                "❌ <b>Cookie-o kaj koreni!</b>\n\n"
+                "Cookie expire hoye giyeche ba bhul.\n"
+                "Abar fresh cookie nao browser theke ar pathao: /ivacookie",
+                parse_mode="HTML")
+
+    threading.Thread(target=_try_reconnect, daemon=True).start()
 
 
 # ── IVA SMS test command (/ivatest) ───────────────────────────────────────────
@@ -6200,6 +6243,45 @@ for _bp in _BUILTIN_PANELS:
         save_dynamic_panels()
     _start_dynamic_panel(_bp)
     print(f"[BUILTIN] Loaded panel: {_bp['id']} ({_bp['host']} / {_bp['username']})")
+
+# ── IVA SMS startup login check ───────────────────────────────────────────────
+def _iva_startup_check():
+    """After bot starts, try to login to IVA panel. If fails, notify admins."""
+    time.sleep(15)  # wait for bot polling to start
+    iva = _iva_find_panel()
+    if not iva:
+        return
+    pid = iva["id"]
+    # If already logged in (scraper exists), skip
+    if _iva_scrapers.get(pid):
+        return
+    print(f"[IVA-STARTUP] Trying initial login for {pid}...")
+    ok = _iva_login(iva)
+    if ok:
+        print(f"[IVA-STARTUP] ✅ IVA panel login OK")
+        return
+    # Login failed — notify all super admins
+    print(f"[IVA-STARTUP] ❌ IVA panel login FAILED — notifying admins")
+    for admin_uid in SUPER_ADMIN_IDS:
+        try:
+            bot.send_message(
+                admin_uid,
+                "⚠️ <b>IVA SMS Panel (bp10) login hoi nai!</b>\n\n"
+                "Railway-er IP theke email/password login block hoye ache (Cloudflare).\n\n"
+                "🍪 <b>Cookie diye fix koro:</b>\n"
+                "1. Phone/PC-te Chrome-e <b>ivasms.com</b> login koro\n"
+                "2. Browser-er Developer Tools open koro\n"
+                "   • PC: F12 → Application → Cookies → ivasms.com\n"
+                "   • Phone: Chrome menu → Desktop site, tahole F12\n"
+                "3. <code>laravel_session</code> cookie-er value copy koro\n"
+                "4. Bot-e pathao: /ivacookie\n\n"
+                "<i>Command: <code>/ivacookie bp10</code></i>",
+                parse_mode="HTML",
+            )
+        except Exception as e:
+            print(f"[IVA-STARTUP] Notify error for {admin_uid}: {e}")
+
+threading.Thread(target=_iva_startup_check, daemon=True).start()
 
 print("🔥 AR OTP BOT is running with 15-PANEL AUTO OTP MONITOR... 🔥")
 print("   ▸ Panel 1: Mahofuza        (91.232.105.47)")
