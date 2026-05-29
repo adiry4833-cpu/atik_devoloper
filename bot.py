@@ -156,6 +156,14 @@ _BUILTIN_PANELS = [
         "username": "Dasbabu50_FD", "password": "Dasbabu50_FD",
         "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
     },
+    # ── IVA SMS (ivasms.com) ──────────────────────────────────────────────────
+    {
+        "id": "bp10", "host": "ivasms.com",
+        "base_url": "https://ivasms.com",
+        "url_hint": "https://ivasms.com/portal/sms/received",
+        "username": "mdrashub2@gmail.com", "password": "Rabbi+nnn",
+        "engine": "iva_sms", "data_path": "/portal/sms/received", "admin_id": None,
+    },
 ]
 
 
@@ -3268,6 +3276,75 @@ def _iva_cookie_update_step(message):
     bot.send_message(message.chat.id, "❌ Panel paoa jai nai.", parse_mode="HTML")
 
 
+# ── IVA SMS test command (/ivatest) ───────────────────────────────────────────
+
+@bot.message_handler(commands=["ivatest"])
+def _iva_test_cmd(message):
+    uid = message.from_user.id
+    if uid not in ADMIN_IDS:
+        return
+
+    # Find ivasms panel (bp10 or any iva_sms engine panel)
+    iva_panel = None
+    for p in _dynamic_panels:
+        if p.get("engine") == "iva_sms":
+            iva_panel = p
+            break
+    # Also check BUILTIN_PANELS
+    if not iva_panel:
+        for p in _BUILTIN_PANELS:
+            if p.get("engine") == "iva_sms":
+                iva_panel = p
+                break
+
+    if not iva_panel:
+        bot.send_message(message.chat.id,
+            "❌ <b>IVA SMS panel paoa jai nai!</b>\n"
+            "Bot restart koro — bp10 auto-load hobe.",
+            parse_mode="HTML")
+        return
+
+    wait_msg = bot.send_message(message.chat.id,
+        "⏳ <b>ivasms.com theke data fetch korchi...</b>",
+        parse_mode="HTML")
+
+    def _do_test():
+        try:
+            bot.delete_message(message.chat.id, wait_msg.message_id)
+        except Exception:
+            pass
+
+        records = _iva_fetch(iva_panel)
+
+        if not records:
+            bot.send_message(message.chat.id,
+                "⚠️ <b>IVA SMS:</b> Ekhon kono OTP nai panel-e.\n"
+                "Panel-e kono SMS thakle dekhabe — try koro /ivatest abar kichukhon por.",
+                parse_mode="HTML")
+            return
+
+        grp = get_otp_group_id()
+        items = list(records.values())[:3]
+
+        bot.send_message(message.chat.id,
+            f"✅ <b>IVA panel theke {len(records)} ta record paoa geche.</b>\n"
+            f"Ekhon <b>{len(items)} ta</b> group-e send korchi...",
+            parse_mode="HTML")
+
+        for number, otp, sms_txt, service in items:
+            svc = service if service else "IVA"
+            if grp:
+                send_otp_message(grp, otp, number, 0, svc)
+            send_otp_message(uid, otp, number, 0, svc)
+
+        bot.send_message(message.chat.id,
+            f"🔥 <b>Done!</b> {len(items)} ta OTP group+DM-e pathanো hoise.\n"
+            f"IVA panel <b>OK</b> ache! 🟢",
+            parse_mode="HTML")
+
+    threading.Thread(target=_do_test, daemon=True).start()
+
+
 # ── Test Panel flow (test without saving) ─────────────────────────────────────
 
 def _tp_get_url(message):
@@ -6140,6 +6217,7 @@ print("   ▸ BP6: Rabbi200            (15.235.182.3 /konekta)")
 print("   ▸ BP7: Rabbi12             (nexor-iprn.com)")
 print("   ▸ BP8: Rabbi12             (51.77.52.79)")
 print("   ▸ BP9: Dasbabu50_FD        (51.210.208.26)")
+print("   ▸ BP10: mdrashub2          (ivasms.com)")
 
 
 def _clear_webhook():
