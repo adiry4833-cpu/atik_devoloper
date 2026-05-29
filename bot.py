@@ -1315,6 +1315,9 @@ def _universal_fetch(panel):
     pid = panel["id"]
     base = panel["base_url"].rstrip("/")
     engine = panel.get("engine", "ints_smscdr")
+    # IVA SMS has its own fetcher
+    if engine == "iva_sms":
+        return _iva_fetch(panel)
     data_path = panel.get("data_path", "/agent/res/data_smscdr.php")
     style = "xisora" if engine == "xisora" else "ints"
     found = {}
@@ -1524,6 +1527,361 @@ def _start_dynamic_panel(panel):
             time.sleep(POLL_INTERVAL)
 
     threading.Thread(target=monitor, daemon=True).start()
+
+
+# ─── IVA SMS (ivasms.com) engine ─────────────────────────────────────────────
+
+_iva_scrapers: dict = {}
+_iva_lock_map: dict = {}
+
+
+def _iva_get_lock(pid):
+    if pid not in _iva_lock_map:
+        _iva_lock_map[pid] = threading.Lock()
+    return _iva_lock_map[pid]
+
+
+def _iva_make_scraper():
+    import cloudscraper
+    return cloudscraper.create_scraper(
+        browser={"browser": "chrome", "platform": "windows", "desktop": True},
+        delay=5,
+    )
+
+
+def _iva_set_cookies(scraper, cookie_str):
+    for part in cookie_str.split(";"):
+        part = part.strip()
+        if "=" in part:
+            k, v = part.split("=", 1)
+            scraper.cookies.set(k.strip(), v.strip(), domain="ivasms.com")
+
+
+def _iva_login(panel):
+    """Login to ivasms.com.
+    Tries email/password first (works on non-blocked IPs like Railway),
+    then falls back to browser cookies if provided.
+    """
+    pid      = panel["id"]
+    email    = panel.get("username", "")
+    password = panel.get("password", "")
+    cookies  = panel.get("cookie_str", "")
+    base     = "https://ivasms.com"
+
+    # ── Attempt 1: email + password ──────────────────────────────────────────
+    if email and password:
+        scraper = _iva_make_scraper()
+        try:
+            # Get login page for CSRF token
+            rg = scraper.get(f"{base}/portal/login", timeout=25)
+            if rg.status_code == 200:
+                csrf = re.search(
+                    r'<meta[^>]+name=["\']csrf-token["\'][^>]*content=["\']([^"\']+)["\']',
+                    rg.text, re.I,
+                )
+                token_field = re.search(
+                    r'<input[^>]+name=["\']_token["\'][^>]*value=["\']([^"\']+)["\']',
+                    rg.text, re.I,
+                )
+                _token = (csrf and csrf.group(1)) or (token_field and token_field.group(1)) or ""
+
+                post = {"email": email, "password": password, "_token": _token}
+                rp = scraper.post(
+                    f"{base}/portal/login", data=post, timeout=25, allow_redirects=True,
+                    headers={"Referer": f"{base}/portal/login"},
+                )
+                if rp.status_code == 200 and "login" not in rp.url.lower():
+                    _iva_scrapers[pid] = scraper
+                    print(f"[{pid}] ✅ IVA SMS: Email/password login OK → {rp.url}")
+                    return True
+                print(f"[{pid}] ⚠️ IVA SMS: Email/password failed ({rp.status_code}, {rp.url}) — trying cookies")
+            else:
+                print(f"[{pid}] ⚠️ IVA SMS: Login page blocked ({rg.status_code}) — trying cookies")
+        except Exception as e:
+            print(f"[{pid}] ⚠️ IVA SMS email login error: {e} — trying cookies")
+
+    # ── Attempt 2: browser cookies ────────────────────────────────────────────
+    if cookies:
+        scraper = _iva_make_scraper()
+        _iva_set_cookies(scraper, cookies)
+        try:
+            r = scraper.get(f"{base}/portal/sms/received", timeout=30)
+            if r.status_code == 200 and "login" not in r.url.lower():
+                _iva_scrapers[pid] = scraper
+                print(f"[{pid}] ✅ IVA SMS: Cookie login OK")
+                return True
+            print(f"[{pid}] ❌ IVA SMS: Cookie login failed ({r.status_code}, {r.url})")
+        except Exception as e:
+            print(f"[{pid}] ❌ IVA SMS cookie login error: {e}")
+
+    print(f"[{pid}] ❌ IVA SMS: All login methods exhausted")
+    return False
+
+
+def _iva_parse_page(html):
+    """Parse ivasms.com SMS received page → {key: (number, otp, sms_txt, service)}."""
+    found = {}
+
+    # 1) Embedded JS array (e.g. var data = [...])
+    for pat in [
+        r'(?:data|rows|messages|smsList|records|smsData)\s*[:=]\s*(\[.*?\])\s*[,;]',
+        r'\.DataTable\([^)]*data\s*:\s*(\[.*?\])',
+    ]:
+        m = re.search(pat, html, re.DOTALL | re.I)
+        if m:
+            try:
+                records = json.loads(m.group(1))
+                for rec in records:
+                    if not isinstance(rec, dict):
+                        continue
+                    num = str(rec.get("number", rec.get("phone", rec.get("msisdn", ""))))
+                    txt = str(rec.get("message", rec.get("sms", rec.get("text", rec.get("body", "")))))
+                    svc = str(rec.get("service", rec.get("cli", rec.get("sender", "IVA"))))
+                    otp = extract_otp_from_sms(txt)
+                    if num and otp:
+                        found[f"{num}:{txt}"] = (num, otp, txt, svc)
+                if found:
+                    return found
+            except Exception:
+                pass
+
+    # 2) HTML table: look for rows with phone number + SMS content
+    from html.parser import HTMLParser
+    class _TblParser(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.rows, self._cur_row, self._cur_cell, self._in_td = [], [], [], False
+        def handle_starttag(self, tag, attrs):
+            if tag == "tr":   self._cur_row = []
+            elif tag == "td": self._in_td = True; self._cur_cell = []
+        def handle_endtag(self, tag):
+            if tag == "td":
+                self._cur_row.append("".join(self._cur_cell).strip())
+                self._in_td = False
+            elif tag == "tr" and self._cur_row:
+                self.rows.append(self._cur_row)
+        def handle_data(self, data):
+            if self._in_td: self._cur_cell.append(data)
+
+    parser = _TblParser()
+    try:
+        parser.feed(html)
+    except Exception:
+        pass
+
+    phone_re = re.compile(r"^\+?\d{7,15}$")
+    for row in parser.rows:
+        clean = [re.sub(r"\s+", " ", c).strip() for c in row]
+        nums = [c for c in clean if phone_re.match(c)]
+        smses = [c for c in clean if extract_otp_from_sms(c)]
+        if nums and smses:
+            n, t = nums[0], smses[0]
+            found[f"{n}:{t}"] = (n, extract_otp_from_sms(t), t, "IVA")
+
+    return found
+
+
+def _iva_parse_rows(rows, default_svc="IVA"):
+    """Convert a list of dicts (DataTables / JSON) to found-dict entries."""
+    found = {}
+    for rec in rows:
+        if not isinstance(rec, dict):
+            # DataTables may return list-of-lists
+            continue
+        num = str(rec.get("number", rec.get("phone", rec.get("msisdn",
+              rec.get("sender", rec.get("from", ""))))))
+        txt = str(rec.get("message", rec.get("sms", rec.get("text",
+              rec.get("body", rec.get("content", ""))))))
+        svc = str(rec.get("service", rec.get("cli", rec.get("application",
+              rec.get("app", rec.get("shortcode", default_svc))))))
+        otp = extract_otp_from_sms(txt)
+        if num and otp:
+            found[f"{num}:{txt}"] = (num, otp, txt, svc)
+    return found
+
+
+def _iva_dt_post(scraper, url, csrf_token, page_html="", start=0, length=100):
+    """Send a DataTables server-side POST and return parsed rows."""
+    today = time.strftime("%Y-%m-%d")
+    payload = {
+        "draw": "1",
+        "start": str(start),
+        "length": str(length),
+        "search[value]": "",
+        "search[regex]": "false",
+        "_token": csrf_token,
+        "start_date": today,
+        "end_date": today,
+        # Common DataTables column ordering params (harmless if unused)
+        "order[0][column]": "0",
+        "order[0][dir]": "desc",
+    }
+    hdrs = {
+        "X-Requested-With": "XMLHttpRequest",
+        "Accept": "application/json, text/javascript, */*",
+        "Referer": "https://ivasms.com/portal/sms/received",
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+    r = scraper.post(url, data=payload, headers=hdrs, timeout=25)
+    if r.status_code != 200:
+        return None, r.status_code
+    ct = r.headers.get("Content-Type", "")
+    if "json" not in ct:
+        return None, 0
+    try:
+        return r.json(), 200
+    except Exception:
+        return None, 0
+
+
+def _iva_fetch(panel):
+    """Fetch latest OTPs from ivasms.com.
+
+    Strategy (in order):
+      1. Load /portal/sms/received, grab CSRF token + discover AJAX URL
+      2. Try DataTables POST to the discovered/candidate AJAX endpoints
+      3. Fall back to plain HTML table parse of the page
+    """
+    pid  = panel["id"]
+    base = "https://ivasms.com"
+    found = {}
+
+    with _iva_get_lock(pid):
+        scraper = _iva_scrapers.get(pid)
+        if not scraper:
+            if not _iva_login(panel):
+                _record_error(pid)
+                return found
+            scraper = _iva_scrapers[pid]
+
+        today = time.strftime("%Y-%m-%d")
+
+        # ── Step 1: load the page ─────────────────────────────────────────────
+        try:
+            r = scraper.get(f"{base}/portal/sms/received",
+                            params={"start_date": today, "end_date": today},
+                            timeout=30)
+        except Exception as e:
+            print(f"[{pid}] IVA page load error: {e}")
+            _iva_scrapers.pop(pid, None)
+            _record_error(pid)
+            return found
+
+        # Session expired?
+        if r.status_code != 200 or "login" in r.url.lower():
+            print(f"[{pid}] IVA session expired → re-login")
+            _iva_scrapers.pop(pid, None)
+            if not _iva_login(panel):
+                _record_error(pid)
+                return found
+            scraper = _iva_scrapers[pid]
+            try:
+                r = scraper.get(f"{base}/portal/sms/received",
+                                params={"start_date": today, "end_date": today},
+                                timeout=30)
+            except Exception as e:
+                print(f"[{pid}] IVA page reload error: {e}")
+                _record_error(pid)
+                return found
+
+        html = r.text
+
+        # ── Step 2: extract CSRF token from page ──────────────────────────────
+        csrf = ""
+        for pat in [
+            r'<meta[^>]+name=["\']csrf-token["\'][^>]*content=["\']([^"\']+)["\']',
+            r'"_token"\s*:\s*"([^"]+)"',
+            r"_token[\"']\s*:\s*[\"']([^\"']+)[\"']",
+            r'<input[^>]+name=["\']_token["\'][^>]*value=["\']([^"\']+)["\']',
+        ]:
+            m = re.search(pat, html, re.I)
+            if m:
+                csrf = m.group(1)
+                break
+
+        # ── Step 3: discover DataTables AJAX URL from page JS ─────────────────
+        # Looks for patterns like: ajax: '/portal/sms/received/data'  or  url: '...'
+        ajax_url_candidates = []
+        for pat in [
+            r"""ajax\s*:\s*['"](\/portal\/sms\/[^'"]+)['"]""",
+            r"""url\s*:\s*['"](\/portal\/sms\/[^'"]+)['"]""",
+            r"""action\s*=\s*['"](\/portal\/sms\/[^'"]+)['"]""",
+            r"""fetch\(['"](\/portal\/sms\/[^'"?]+)""",
+        ]:
+            for m in re.finditer(pat, html, re.I):
+                ep = m.group(1)
+                if ep not in ajax_url_candidates:
+                    ajax_url_candidates.append(ep)
+
+        # Add hardcoded fallback candidates (most common Laravel SMS panel patterns)
+        for fallback in [
+            "/portal/sms/received/data",
+            "/portal/sms/received-data",
+            "/portal/received/sms/data",
+            "/portal/sms/datatable",
+            "/portal/sms/ajax",
+            "/portal/sms/list",
+            "/portal/api/sms/received",
+            "/portal/sms/received",          # POST to same URL (common)
+        ]:
+            if fallback not in ajax_url_candidates:
+                ajax_url_candidates.append(fallback)
+
+        # ── Step 4: try DataTables POST on each candidate ─────────────────────
+        for ep in ajax_url_candidates:
+            ep_url = base + ep if ep.startswith("/") else ep
+            try:
+                js, code = _iva_dt_post(scraper, ep_url, csrf, html)
+                if js is None:
+                    continue
+                # DataTables standard: {"draw":N, "data":[...], "recordsTotal":N}
+                rows = (js if isinstance(js, list)
+                        else js.get("data", js.get("records",
+                             js.get("rows", js.get("sms", [])))))
+                if isinstance(rows, list) and rows:
+                    # Rows may be list-of-dicts or list-of-lists
+                    if isinstance(rows[0], dict):
+                        found = _iva_parse_rows(rows)
+                    else:
+                        # list-of-lists: try to figure out columns from header
+                        # Best-effort: assume [id, number, message, service, ...]
+                        for row in rows:
+                            if len(row) >= 3:
+                                num = str(row[1]) if len(row) > 1 else ""
+                                txt = str(row[2]) if len(row) > 2 else ""
+                                svc = str(row[3]) if len(row) > 3 else "IVA"
+                                otp = extract_otp_from_sms(txt)
+                                if num and otp:
+                                    found[f"{num}:{txt}"] = (num, otp, txt, svc)
+                    if found:
+                        print(f"[{pid}] ✅ IVA DataTables hit: {ep_url} → {len(found)} OTPs")
+                        # Remember this working endpoint for next time
+                        if panel.get("iva_ajax_url") != ep_url:
+                            panel["iva_ajax_url"] = ep_url
+                            save_dynamic_panels()
+                        break
+            except Exception as ex:
+                print(f"[{pid}] IVA AJAX probe {ep}: {ex}")
+                continue
+
+        # ── Step 5: fall back to static HTML table parse ─────────────────────
+        if not found:
+            found = _iva_parse_page(html)
+            if found:
+                print(f"[{pid}] ✅ IVA HTML-table parse → {len(found)} OTPs")
+
+        _record_fetch(pid, len(found))
+        if found:
+            print(f"[{pid}] ✅ IVA SMS total: {len(found)} OTPs found")
+        else:
+            # Debug: log first 300 chars of page so we know what we're getting
+            preview = html[:300].replace("\n", " ").strip()
+            print(f"[{pid}] IVA SMS: 0 OTPs. Page preview: {preview}")
+
+    return found
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 
 
 def extract_otp_from_sms(sms_text):
@@ -2566,6 +2924,20 @@ def _ap_get_url(message):
     _addpanel_state[uid]["data"]["base_url"] = base_url
     _addpanel_state[uid]["data"]["host"] = host_m.group(1) if host_m else base_url
     _addpanel_state[uid]["data"]["url_hint"] = url  # preserve original URL as hint
+
+    # ── IVA SMS special flow (ivasms.com) ────────────────────────────────────
+    if "ivasms.com" in base_url.lower():
+        msg = bot.send_message(
+            message.chat.id,
+            "🌐 <b>IVA SMS Panel (ivasms.com) detect hoise!</b>\n\n"
+            "👤 Tomar ivasms.com account-er <b>Email</b> pathao:",
+            reply_markup=_back_admin_kb(),
+            parse_mode="HTML",
+        )
+        bot.register_next_step_handler(msg, _iva_ap_get_email)
+        return
+    # ─────────────────────────────────────────────────────────────────────────
+
     msg = bot.send_message(
         message.chat.id,
         f"✅ <b>URL set:</b> <code>{base_url}</code>\n\n"
@@ -2684,6 +3056,216 @@ def _ap_get_pass(message):
         )
 
     threading.Thread(target=_do_add, daemon=True).start()
+
+
+# ── IVA SMS add-panel flow  (email → password → [optional cookie fallback]) ───
+
+def _iva_ap_get_email(message):
+    uid = message.from_user.id
+    if uid not in ADMIN_IDS:
+        return
+    if _is_back(message.text):
+        _addpanel_state.pop(uid, None)
+        _go_admin_panel(message)
+        return
+    if _intercept_menu_btn(message):
+        return
+    email = (message.text or "").strip()
+    if not email or "@" not in email:
+        msg = bot.send_message(message.chat.id,
+            "❌ Valid email dao (example: user@email.com):",
+            reply_markup=_back_admin_kb(), parse_mode="HTML")
+        bot.register_next_step_handler(msg, _iva_ap_get_email)
+        return
+    _addpanel_state[uid]["data"]["username"] = email
+    msg = bot.send_message(message.chat.id,
+        f"✅ Email: <code>{email}</code>\n\n🔑 <b>Password</b> pathao:",
+        reply_markup=_back_admin_kb(), parse_mode="HTML")
+    bot.register_next_step_handler(msg, _iva_ap_get_pass)
+
+
+def _iva_ap_get_pass(message):
+    uid = message.from_user.id
+    if uid not in ADMIN_IDS:
+        return
+    if _is_back(message.text):
+        _addpanel_state.pop(uid, None)
+        _go_admin_panel(message)
+        return
+    if _intercept_menu_btn(message):
+        return
+    password = (message.text or "").strip()
+    if not password:
+        msg = bot.send_message(message.chat.id, "❌ Password dao:",
+            reply_markup=_back_admin_kb(), parse_mode="HTML")
+        bot.register_next_step_handler(msg, _iva_ap_get_pass)
+        return
+    _addpanel_state[uid]["data"]["password"] = password
+    _iva_do_connect(message, cookie_str="")
+
+
+def _iva_ap_get_cookie(message):
+    """Fallback: collect browser cookies when email/password is blocked."""
+    uid = message.from_user.id
+    if uid not in ADMIN_IDS:
+        return
+    if _is_back(message.text):
+        _addpanel_state.pop(uid, None)
+        _go_admin_panel(message)
+        return
+    if _intercept_menu_btn(message):
+        return
+    cookie_str = (message.text or "").strip()
+    if not cookie_str or "=" not in cookie_str:
+        msg = bot.send_message(message.chat.id,
+            "❌ <b>Valid cookie dao!</b>\nFormat: <code>cf_clearance=xxx; laravel_session=yyy</code>",
+            reply_markup=_back_admin_kb(), parse_mode="HTML")
+        bot.register_next_step_handler(msg, _iva_ap_get_cookie)
+        return
+    _iva_do_connect(message, cookie_str=cookie_str)
+
+
+def _iva_do_connect(message, cookie_str=""):
+    """Build panel dict and start monitor thread."""
+    uid = message.from_user.id
+    data = _addpanel_state.get(uid, {}).get("data", {})
+    _addpanel_state.pop(uid, None)
+    chat_id = message.chat.id
+
+    panel_id = f"iva{int(time.time()) % 100000}"
+    panel = {
+        "id": panel_id,
+        "host": "ivasms.com",
+        "base_url": "https://ivasms.com",
+        "url_hint": "https://ivasms.com/portal/sms/received",
+        "username": data.get("username", ""),
+        "password": data.get("password", ""),
+        "cookie_str": cookie_str,
+        "engine": "iva_sms",
+        "data_path": "/portal/sms/received",
+        "admin_id": uid,
+    }
+
+    wait_msg = bot.send_message(chat_id,
+        "⏳ <b>IVA SMS — connect korchi...</b>", parse_mode="HTML")
+
+    def _do():
+        ok = _iva_login(panel)
+        try:
+            bot.delete_message(chat_id, wait_msg.message_id)
+        except Exception:
+            pass
+
+        if not ok:
+            # If email/password was given but blocked (datacenter IP), suggest cookie fallback
+            if panel.get("username") and panel.get("password") and not cookie_str:
+                msg2 = bot.send_message(chat_id,
+                    "❌ <b>Email/password kaj koreni!</b>\n\n"
+                    "Tor hosting-er IP Cloudflare block kore diyeche.\n\n"
+                    "🍪 <b>Cookie fallback try korbo?</b>\n"
+                    "Browser theke cookie copy kore niche paste koro:\n"
+                    "<code>cf_clearance=VALUE; laravel_session=VALUE</code>\n\n"
+                    "<i>(Replit/Render/Oracle Cloud theke host korle ei problem hoi.\n"
+                    "Railway/VPS theke korle usually kaj kore.)</i>",
+                    reply_markup=_back_admin_kb(), parse_mode="HTML")
+                # Re-use addpanel_state for cookie flow
+                _addpanel_state[uid] = {"step": "iva_cookie", "data": {
+                    "username": panel["username"],
+                    "password": panel["password"],
+                }}
+                bot.register_next_step_handler(msg2, _iva_ap_get_cookie)
+            else:
+                bot.send_message(chat_id,
+                    "❌ <b>IVA SMS connect FAILED!</b>\n\n"
+                    "Cookie vul/expire hoyeche. Notun cookie dao:\n"
+                    "<code>/ivacookie</code>",
+                    parse_mode="HTML")
+            return
+
+        _dynamic_panels.append(panel)
+        save_dynamic_panels()
+        _start_dynamic_panel(panel)
+
+        method = "Cookie" if cookie_str else "Email/Password"
+        bot.send_message(chat_id,
+            f"✅🔥 <b>IVA SMS PANEL ADDED!</b> 🔥✅\n"
+            f"⚡━━━━━━━━━━━━━━━━⚡\n\n"
+            f"🆔 <b>ID     ▸▸</b> <code>{panel_id}</code>\n"
+            f"🌐 <b>Host   ▸▸</b> <code>ivasms.com</code>\n"
+            f"🔑 <b>Login  ▸▸</b> <code>{method}</code>\n\n"
+            f"📡 Monitor started! New OTP ashle group-e pathabe.\n\n"
+            + (f"⚠️ Cookie expire hole: <code>/ivacookie {panel_id}</code>" if cookie_str else ""),
+            parse_mode="HTML")
+
+    threading.Thread(target=_do, daemon=True).start()
+
+
+# ── IVA SMS cookie update command ─────────────────────────────────────────────
+
+_iva_cookie_update_state: dict = {}
+
+
+@bot.message_handler(commands=["ivacookie"])
+def _iva_cookie_cmd(message):
+    uid = message.from_user.id
+    if uid not in ADMIN_IDS:
+        return
+    args = message.text.split()[1:] if message.text else []
+    panel_id = args[0] if args else None
+
+    # Find the IVA panel
+    iva_panel = None
+    for p in _dynamic_panels:
+        if p.get("engine") == "iva_sms" and (not panel_id or p["id"] == panel_id):
+            iva_panel = p
+            break
+
+    if not iva_panel:
+        bot.send_message(message.chat.id,
+            "❌ <b>IVA SMS panel paoa jai nai.</b>\n"
+            "Prothome Add Panel diye ivasms.com add koro.",
+            parse_mode="HTML")
+        return
+
+    _iva_cookie_update_state[uid] = iva_panel["id"]
+    msg = bot.send_message(
+        message.chat.id,
+        f"🔄 <b>IVA SMS Cookie Update</b>\n"
+        f"Panel: <code>{iva_panel['id']}</code>\n\n"
+        f"Browser theke notun cookie copy kore paste koro:\n"
+        f"<code>cf_clearance=VALUE; laravel_session=VALUE</code>",
+        reply_markup=_back_admin_kb(),
+        parse_mode="HTML",
+    )
+    bot.register_next_step_handler(msg, _iva_cookie_update_step)
+
+
+def _iva_cookie_update_step(message):
+    uid = message.from_user.id
+    if _is_back(message.text):
+        _iva_cookie_update_state.pop(uid, None)
+        _go_admin_panel(message)
+        return
+    panel_id = _iva_cookie_update_state.pop(uid, None)
+    if not panel_id:
+        return
+    cookie_str = (message.text or "").strip()
+    if not cookie_str or "=" not in cookie_str:
+        bot.send_message(message.chat.id, "❌ Valid cookie format dao.", parse_mode="HTML")
+        return
+
+    for p in _dynamic_panels:
+        if p["id"] == panel_id:
+            p["cookie_str"] = cookie_str
+            save_dynamic_panels()
+            _iva_scrapers.pop(panel_id, None)  # force re-login with new cookie
+            bot.send_message(
+                message.chat.id,
+                "✅ <b>Cookie updated!</b> Notun cookie diye connect korbe.",
+                parse_mode="HTML",
+            )
+            return
+    bot.send_message(message.chat.id, "❌ Panel paoa jai nai.", parse_mode="HTML")
 
 
 # ── Test Panel flow (test without saving) ─────────────────────────────────────
