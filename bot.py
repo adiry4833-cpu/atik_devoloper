@@ -110,6 +110,7 @@ _BUILTIN_PANELS = [
     {'id': 'bp9', 'host': '51.210.208.26', 'base_url': 'http://51.210.208.26/ints', 'url_hint': 'http://51.210.208.26/ints/agent/SMSCDRStats', 'username': 'Dasbabu50_FD', 'password': 'Dasbabu50_FD', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
     {'id': 'bp10', 'host': 'ivasms.com', 'base_url': 'https://ivasms.com', 'url_hint': 'https://ivasms.com/portal/sms/received', 'username': 'mdrashub2@gmail.com', 'password': 'Rabbi+nnn', 'engine': 'iva_sms', 'data_path': '/portal/sms/received', 'admin_id': None},
     {'id': 'bp11', 'host': '139.99.68.231', 'base_url': 'http://139.99.68.231/ints', 'url_hint': 'http://139.99.68.231/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
+    {'id': 'bp12', 'host': '51.75.144.178', 'base_url': 'http://51.75.144.178/ints', 'url_hint': 'http://51.75.144.178/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
 ]
 # <<SYNC:_BUILTIN_PANELS:END>>
 
@@ -853,6 +854,7 @@ _dynamic_sessions = {}
 _dynamic_locks = {}
 _addpanel_state = {}
 _testpanel_state = {}
+_pending_force_add = {}   # panel_id → panel dict (login failed, user wants force-add)
 _pending_excel = {}  # uid → {'numbers': [...], 'filename': str}
 
 # Migrate old panels that use panel_type → new engine/data_path format
@@ -3004,15 +3006,27 @@ def _ap_get_pass(message):
         except Exception:
             pass
         if not sess:
+            # Save panel data for force-add (Railway IP might be blocked by panel)
+            _pending_force_add[panel_id] = panel
+            force_markup = types.InlineKeyboardMarkup(row_width=1)
+            force_markup.add(
+                types.InlineKeyboardButton(
+                    "⚠️ Force Add করো (Login Skip)",
+                    callback_data=f"forceadd:{panel_id}",
+                )
+            )
+            force_markup.add(
+                types.InlineKeyboardButton("❌ বাদ দাও", callback_data=f"forceadd_cancel:{panel_id}")
+            )
             bot.send_message(
                 chat_id,
-                "❌ <b>Connection FAILED!</b> ❌\n\n"
-                "Possible karon:\n"
-                "• URL thik nai (http:// diye shuru koro)\n"
-                "• Username/password vul\n"
-                "• Panel offline / network problem\n\n"
-                "💡 Bot-er log check koro: /start → Admin → Panels\n"
-                "🔁 Abar try koro: /addpanel",
+                "⚠️ <b>Login Verify করা গেলো না!</b>\n\n"
+                "Railway server-er IP অনেক panel block করে।\n"
+                "তবুও panel credentials সেভ করতে চাইলে\n"
+                "<b>Force Add</b> করো — panel নিজেই পরে login করার চেষ্টা করবে।\n\n"
+                f"🌐 Host: <code>{data.get('host', '')}</code>\n"
+                f"👤 User: <code>{data.get('username', '')}</code>",
+                reply_markup=force_markup,
                 parse_mode="HTML",
             )
             return
@@ -3655,6 +3669,52 @@ def callback_handler(call):
     global stock
     try:
         data = call.data
+
+        # ── Force Add Panel (Railway IP blocked) ─────────────────────────────
+        if data.startswith("forceadd:"):
+            if call.from_user.id not in ADMIN_IDS:
+                bot.answer_callback_query(call.id, "❌ Permission নেই!")
+                return
+            pid = data.split(":", 1)[1]
+            panel = _pending_force_add.pop(pid, None)
+            if not panel:
+                bot.answer_callback_query(call.id, "❌ Panel data expire হয়ে গেছে। আবার চেষ্টা করো।")
+                return
+            _dynamic_panels.append(panel)
+            save_dynamic_panels()
+            _start_dynamic_panel(panel)
+            bot.answer_callback_query(call.id, "✅ Panel Force Add হয়েছে!")
+            try:
+                bot.edit_message_text(
+                    f"✅🔥 <b>PANEL FORCE ADDED!</b>\n\n"
+                    f"🆔 <b>ID:</b> <code>{pid}</code>\n"
+                    f"🌐 <b>Host:</b> <code>{panel.get('host', '')}</code>\n"
+                    f"👤 <b>User:</b> <code>{panel.get('username', '')}</code>\n\n"
+                    f"⚠️ Login এখনো verify হয়নি — panel নিজেই login করার চেষ্টা করবে।\n"
+                    f"/panels দিয়ে status দেখো।",
+                    call.message.chat.id,
+                    call.message.message_id,
+                    parse_mode="HTML",
+                )
+            except Exception:
+                pass
+            return
+
+        if data.startswith("forceadd_cancel:"):
+            pid = data.split(":", 1)[1]
+            _pending_force_add.pop(pid, None)
+            bot.answer_callback_query(call.id, "বাদ দেওয়া হয়েছে।")
+            try:
+                bot.edit_message_text(
+                    "❌ Panel add বাতিল করা হয়েছে।\n/addpanel দিয়ে আবার চেষ্টা করো।",
+                    call.message.chat.id,
+                    call.message.message_id,
+                    parse_mode="HTML",
+                )
+            except Exception:
+                pass
+            return
+        # ─────────────────────────────────────────────────────────────────────
 
         if data == "v":
             uid = call.from_user.id
