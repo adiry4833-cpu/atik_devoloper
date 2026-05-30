@@ -34,7 +34,12 @@ if os.path.exists(_PID_FILE):
 open(_PID_FILE, "w").write(str(_my_pid))
 
 API_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
-SUPER_ADMIN_IDS = [6664150885, 8523774444]
+# <<SYNC:SUPER_ADMIN_IDS:START>>
+SUPER_ADMIN_IDS = [
+    6664150885,
+    8523774444,
+]
+# <<SYNC:SUPER_ADMIN_IDS:END>>
 ADMIN_IDS = list(SUPER_ADMIN_IDS)
 CHANNEL_2 = ""
 
@@ -92,79 +97,21 @@ P6_USER_NAME = "Sagardas50"
 P6_PASSWORD = "Sagardas50"
 
 # ── Builtin extra panels (hardcoded, always started automatically) ─────────────
+# <<SYNC:_BUILTIN_PANELS:START>>
 _BUILTIN_PANELS = [
-    {
-        "id": "bp1", "host": "139.99.69.196",
-        "base_url": "http://139.99.69.196/ints",
-        "url_hint": "http://139.99.69.196/ints/agent/SMSCDRStats",
-        "username": "Mahofuza12", "password": "Mahofuza12",
-        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
-    },
-    {
-        "id": "bp2", "host": "139.99.9.4",
-        "base_url": "http://139.99.9.4/ints",
-        "url_hint": "http://139.99.9.4/ints/agent/SMSCDRStats",
-        "username": "Rabbi12", "password": "Rabbi12",
-        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
-    },
-    {
-        "id": "bp3", "host": "54.36.173.235",
-        "base_url": "http://54.36.173.235/ints",
-        "url_hint": "http://54.36.173.235/ints/agent/SMSCDRStats",
-        "username": "Rabbi12", "password": "Rabbi@",
-        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
-    },
-    {
-        "id": "bp4", "host": "54.39.104.241",
-        "base_url": "http://54.39.104.241/ints",
-        "url_hint": "http://54.39.104.241/ints/agent/SMSCDRStats",
-        "username": "Rabbi5", "password": "Rabbi5",
-        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
-    },
-    {
-        "id": "bp5", "host": "213.32.24.208",
-        "base_url": "http://213.32.24.208/ints",
-        "url_hint": "http://213.32.24.208/ints/agent/SMSCDRStats",
-        "username": "mahofuza", "password": "mahofuza@",
-        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
-    },
-    {
-        "id": "bp6", "host": "15.235.182.3",
-        "base_url": "http://15.235.182.3/konekta",
-        "url_hint": "http://15.235.182.3/konekta/agent/SMSCDRReports",
-        "username": "Rabbi200", "password": "Rabbi200",
-        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
-    },
-    {
-        "id": "bp7", "host": "nexor-iprn.com",
-        "base_url": "https://nexor-iprn.com",
-        "url_hint": "https://nexor-iprn.com/agent/SMSCDRStats",
-        "username": "Rabbi12", "password": "Rabbi12@",
-        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
-    },
-    {
-        "id": "bp8", "host": "51.77.52.79",
-        "base_url": "http://51.77.52.79/ints",
-        "url_hint": "http://51.77.52.79/ints/agent/SMSCDRStats",
-        "username": "Rabbi12", "password": "Rabbi12",
-        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
-    },
-    {
-        "id": "bp9", "host": "51.210.208.26",
-        "base_url": "http://51.210.208.26/ints",
-        "url_hint": "http://51.210.208.26/ints/agent/SMSCDRStats",
-        "username": "Dasbabu50_FD", "password": "Dasbabu50_FD",
-        "engine": "ints_smscdr", "data_path": "/agent/res/data_smscdr.php", "admin_id": None,
-    },
-    # ── IVA SMS (ivasms.com) ──────────────────────────────────────────────────
-    {
-        "id": "bp10", "host": "ivasms.com",
-        "base_url": "https://ivasms.com",
-        "url_hint": "https://ivasms.com/portal/sms/received",
-        "username": "mdrashub2@gmail.com", "password": "Rabbi+nnn",
-        "engine": "iva_sms", "data_path": "/portal/sms/received", "admin_id": None,
-    },
+    {'id': 'bp1', 'host': '139.99.69.196', 'base_url': 'http://139.99.69.196/ints', 'url_hint': 'http://139.99.69.196/ints/agent/SMSCDRStats', 'username': 'Mahofuza12', 'password': 'Mahofuza12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
+    {'id': 'bp2', 'host': '139.99.9.4', 'base_url': 'http://139.99.9.4/ints', 'url_hint': 'http://139.99.9.4/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
+    {'id': 'bp3', 'host': '54.36.173.235', 'base_url': 'http://54.36.173.235/ints', 'url_hint': 'http://54.36.173.235/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
+    {'id': 'bp4', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/agent/SMSCDRStats', 'username': 'Rabbi5', 'password': 'Rabbi5', 'engine': 'ints_smsranges', 'data_path': '/agent/res/data_smsranges.php', 'admin_id': None},
+    {'id': 'bp5', 'host': '213.32.24.208', 'base_url': 'http://213.32.24.208/ints', 'url_hint': 'http://213.32.24.208/ints/agent/SMSCDRStats', 'username': 'mahofuza', 'password': 'mahofuza@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
+    {'id': 'bp6', 'host': '15.235.182.3', 'base_url': 'http://15.235.182.3/konekta', 'url_hint': 'http://15.235.182.3/konekta/agent/SMSCDRReports', 'username': 'Rabbi200', 'password': 'Rabbi200', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
+    {'id': 'bp7', 'host': 'nexor-iprn.com', 'base_url': 'https://nexor-iprn.com', 'url_hint': 'https://nexor-iprn.com/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
+    {'id': 'bp8', 'host': '51.77.52.79', 'base_url': 'http://51.77.52.79/ints', 'url_hint': 'http://51.77.52.79/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
+    {'id': 'bp9', 'host': '51.210.208.26', 'base_url': 'http://51.210.208.26/ints', 'url_hint': 'http://51.210.208.26/ints/agent/SMSCDRStats', 'username': 'Dasbabu50_FD', 'password': 'Dasbabu50_FD', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
+    {'id': 'bp10', 'host': 'ivasms.com', 'base_url': 'https://ivasms.com', 'url_hint': 'https://ivasms.com/portal/sms/received', 'username': 'mdrashub2@gmail.com', 'password': 'Rabbi+nnn', 'engine': 'iva_sms', 'data_path': '/portal/sms/received', 'admin_id': None},
+    {'id': 'bp11', 'host': '139.99.68.231', 'base_url': 'http://139.99.68.231/ints', 'url_hint': 'http://139.99.68.231/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
 ]
+# <<SYNC:_BUILTIN_PANELS:END>>
 
 
 POLL_INTERVAL = 8
@@ -231,6 +178,7 @@ def is_super_admin(uid):
 
 def save_admins():
     save_json(ADMINS_FILE, [a for a in ADMIN_IDS if a not in SUPER_ADMIN_IDS])
+    _sync_settings_to_botpy()
 
 
 def save_admin_expiry():
@@ -304,7 +252,7 @@ threading.Thread(target=_admin_expiry_checker, daemon=True).start()
 GROUP_SETTINGS_FILE = "group_settings.json"
 # <<SYNC:_group_settings_defaults:START>>
 _group_settings = load_json(GROUP_SETTINGS_FILE, {
-    'otp_group_id': -1003940642614,
+    'otp_group_id': -1003850531522,
     'otp_group_link': '',
     'auto_delete': True,
     'auto_delete_seconds': 3600,
@@ -436,7 +384,10 @@ def _sync_block(source, marker_name, new_content):
 
 
 def _sync_settings_to_botpy():
-    """Auto-patch bot.py so its hardcoded defaults always match live settings."""
+    """Auto-patch bot.py so its hardcoded defaults always match live settings.
+    This ensures that when bot.py is pushed to Railway/any server, all panels,
+    admin IDs, and other settings are already baked in — no data loss on redeploy.
+    """
     try:
         bot_file = os.path.abspath(__file__)
         with open(bot_file, "r", encoding="utf-8") as f:
@@ -458,9 +409,32 @@ def _sync_settings_to_botpy():
             f"_group_settings = load_json(GROUP_SETTINGS_FILE, {_fmt_pyval(_group_settings)})"
         )
 
+        # ── Sync SUPER_ADMIN_IDS ──────────────────────────────────────────────
+        source = _sync_block(
+            source, "SUPER_ADMIN_IDS",
+            f"SUPER_ADMIN_IDS = {_fmt_pyval(SUPER_ADMIN_IDS)}"
+        )
+
+        # ── Sync _BUILTIN_PANELS (merge with dynamic panels) ─────────────────
+        # Build merged panel list: start with all dynamic panels, then add any
+        # BUILTIN panels not already present (by id). Dynamic panels added via
+        # /addpanel are promoted to hardcoded — so Railway always has them.
+        _seen_ids = set()
+        _merged_panels = []
+        for _p in (_dynamic_panels + _BUILTIN_PANELS):
+            if _p.get("id") and _p["id"] not in _seen_ids:
+                _seen_ids.add(_p["id"])
+                # Strip runtime-only keys that shouldn't be hardcoded
+                _clean = {k: v for k, v in _p.items() if k not in ("cookie_str",)}
+                _merged_panels.append(_clean)
+        source = _sync_block(
+            source, "_BUILTIN_PANELS",
+            f"_BUILTIN_PANELS = {_fmt_pyval(_merged_panels)}"
+        )
+
         with open(bot_file, "w", encoding="utf-8") as f:
             f.write(source)
-        print("[SYNC] ✅ bot.py auto-patched with latest settings")
+        print("[SYNC] ✅ bot.py auto-patched with latest settings (panels, admins, templates)")
     except Exception as e:
         print(f"[SYNC] ❌ Failed to patch bot.py: {e}")
 
@@ -1549,81 +1523,75 @@ def _iva_get_lock(pid):
     return _iva_lock_map[pid]
 
 
+_IVA_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
+}
+
+
+def _iva_make_session(cookie_str=""):
+    """Create a plain requests.Session with browser headers + optional cookies."""
+    sess = requests.Session()
+    sess.headers.update(_IVA_HEADERS)
+    if cookie_str:
+        for part in cookie_str.split(";"):
+            part = part.strip()
+            if "=" in part:
+                k, v = part.split("=", 1)
+                sess.cookies.set(k.strip(), v.strip(), domain="ivasms.com")
+    return sess
+
+
+# Keep old name for compatibility
 def _iva_make_scraper():
-    import cloudscraper
-    return cloudscraper.create_scraper(
-        browser={"browser": "chrome", "platform": "windows", "desktop": True},
-        delay=5,
-    )
+    return _iva_make_session()
 
 
-def _iva_set_cookies(scraper, cookie_str):
+def _iva_set_cookies(sess, cookie_str):
     for part in cookie_str.split(";"):
         part = part.strip()
         if "=" in part:
             k, v = part.split("=", 1)
-            scraper.cookies.set(k.strip(), v.strip(), domain="ivasms.com")
+            sess.cookies.set(k.strip(), v.strip(), domain="ivasms.com")
 
 
 def _iva_login(panel):
-    """Login to ivasms.com.
-    Tries email/password first (works on non-blocked IPs like Railway),
-    then falls back to browser cookies if provided.
+    """Login to ivasms.com using browser cookies (plain requests — no cloudscraper).
+    Railway/cloud server IPs are blocked by Cloudflare for email/password login,
+    so we ONLY support cookie-based login here.
     """
-    pid      = panel["id"]
-    email    = panel.get("username", "")
-    password = panel.get("password", "")
-    cookies  = panel.get("cookie_str", "")
-    base     = "https://ivasms.com"
+    pid     = panel["id"]
+    cookies = panel.get("cookie_str", "")
+    base    = "https://ivasms.com"
 
-    # ── Attempt 1: email + password ──────────────────────────────────────────
-    if email and password:
-        scraper = _iva_make_scraper()
-        try:
-            # Get login page for CSRF token
-            rg = scraper.get(f"{base}/portal/login", timeout=25)
-            if rg.status_code == 200:
-                csrf = re.search(
-                    r'<meta[^>]+name=["\']csrf-token["\'][^>]*content=["\']([^"\']+)["\']',
-                    rg.text, re.I,
-                )
-                token_field = re.search(
-                    r'<input[^>]+name=["\']_token["\'][^>]*value=["\']([^"\']+)["\']',
-                    rg.text, re.I,
-                )
-                _token = (csrf and csrf.group(1)) or (token_field and token_field.group(1)) or ""
+    if not cookies:
+        print(f"[{pid}] ❌ IVA SMS: No cookie provided — cannot login from server IP")
+        return False
 
-                post = {"email": email, "password": password, "_token": _token}
-                rp = scraper.post(
-                    f"{base}/portal/login", data=post, timeout=25, allow_redirects=True,
-                    headers={"Referer": f"{base}/portal/login"},
-                )
-                if rp.status_code == 200 and "login" not in rp.url.lower():
-                    _iva_scrapers[pid] = scraper
-                    print(f"[{pid}] ✅ IVA SMS: Email/password login OK → {rp.url}")
-                    return True
-                print(f"[{pid}] ⚠️ IVA SMS: Email/password failed ({rp.status_code}, {rp.url}) — trying cookies")
-            else:
-                print(f"[{pid}] ⚠️ IVA SMS: Login page blocked ({rg.status_code}) — trying cookies")
-        except Exception as e:
-            print(f"[{pid}] ⚠️ IVA SMS email login error: {e} — trying cookies")
-
-    # ── Attempt 2: browser cookies ────────────────────────────────────────────
-    if cookies:
-        scraper = _iva_make_scraper()
-        _iva_set_cookies(scraper, cookies)
-        try:
-            r = scraper.get(f"{base}/portal/sms/received", timeout=30)
-            if r.status_code == 200 and "login" not in r.url.lower():
-                _iva_scrapers[pid] = scraper
-                print(f"[{pid}] ✅ IVA SMS: Cookie login OK")
-                return True
-            print(f"[{pid}] ❌ IVA SMS: Cookie login failed ({r.status_code}, {r.url})")
-        except Exception as e:
-            print(f"[{pid}] ❌ IVA SMS cookie login error: {e}")
-
-    print(f"[{pid}] ❌ IVA SMS: All login methods exhausted")
-    return False
+    sess = _iva_make_session(cookies)
+    try:
+        r = sess.get(
+            f"{base}/portal/sms/received",
+            timeout=20,
+            allow_redirects=True,
+        )
+        if r.status_code == 200 and "login" not in r.url.lower():
+            _iva_scrapers[pid] = sess
+            print(f"[{pid}] ✅ IVA SMS: Cookie login OK ({r.url})")
+            return True
+        print(f"[{pid}] ❌ IVA SMS: Cookie login failed — status={r.status_code} url={r.url}")
+        return False
+    except Exception as e:
+        print(f"[{pid}] ❌ IVA SMS cookie login error: {e}")
+        return False
 
 
 def _iva_parse_page(html):
@@ -2933,16 +2901,27 @@ def _ap_get_url(message):
     _addpanel_state[uid]["data"]["host"] = host_m.group(1) if host_m else base_url
     _addpanel_state[uid]["data"]["url_hint"] = url  # preserve original URL as hint
 
-    # ── IVA SMS special flow (ivasms.com) ────────────────────────────────────
+    # ── IVA SMS special flow (ivasms.com) — cookie only ─────────────────────
     if "ivasms.com" in base_url.lower():
         msg = bot.send_message(
             message.chat.id,
-            "🌐 <b>IVA SMS Panel (ivasms.com) detect hoise!</b>\n\n"
-            "👤 Tomar ivasms.com account-er <b>Email</b> pathao:",
+            "🌐 <b>IVA SMS Panel detect hoise!</b>\n\n"
+            "⚠️ Railway server IP theke email/password login Cloudflare block kore.\n"
+            "<b>Browser cookie diye login korte hobe.</b>\n\n"
+            "📋 <b>Cookie পাওয়ার নিয়ম:</b>\n"
+            "1. Phone/PC-এ Chrome-এ <b>ivasms.com</b> login করো\n"
+            "2. এই link open করো browser-এ:\n"
+            "   <code>javascript:document.cookie</code>\n"
+            "   (address bar-এ paste করো)\n"
+            "   <b>অথবা</b> PC-তে: F12 → Application → Cookies → https://ivasms.com\n"
+            "3. <code>laravel_session</code> value copy করো\n\n"
+            "🍪 এখন cookie paste করো:\n"
+            "<code>laravel_session=eyJ...</code>",
             reply_markup=_back_admin_kb(),
             parse_mode="HTML",
+            disable_web_page_preview=True,
         )
-        bot.register_next_step_handler(msg, _iva_ap_get_email)
+        bot.register_next_step_handler(msg, _iva_ap_get_cookie)
         return
     # ─────────────────────────────────────────────────────────────────────────
 
@@ -3066,54 +3045,20 @@ def _ap_get_pass(message):
     threading.Thread(target=_do_add, daemon=True).start()
 
 
-# ── IVA SMS add-panel flow  (email → password → [optional cookie fallback]) ───
+# ── IVA SMS add-panel flow (cookie only — email/pass blocked by Cloudflare) ───
 
 def _iva_ap_get_email(message):
-    uid = message.from_user.id
-    if uid not in ADMIN_IDS:
-        return
-    if _is_back(message.text):
-        _addpanel_state.pop(uid, None)
-        _go_admin_panel(message)
-        return
-    if _intercept_menu_btn(message):
-        return
-    email = (message.text or "").strip()
-    if not email or "@" not in email:
-        msg = bot.send_message(message.chat.id,
-            "❌ Valid email dao (example: user@email.com):",
-            reply_markup=_back_admin_kb(), parse_mode="HTML")
-        bot.register_next_step_handler(msg, _iva_ap_get_email)
-        return
-    _addpanel_state[uid]["data"]["username"] = email
-    msg = bot.send_message(message.chat.id,
-        f"✅ Email: <code>{email}</code>\n\n🔑 <b>Password</b> pathao:",
-        reply_markup=_back_admin_kb(), parse_mode="HTML")
-    bot.register_next_step_handler(msg, _iva_ap_get_pass)
+    """Legacy handler — redirects to cookie flow immediately."""
+    _iva_ap_get_cookie(message)
 
 
 def _iva_ap_get_pass(message):
-    uid = message.from_user.id
-    if uid not in ADMIN_IDS:
-        return
-    if _is_back(message.text):
-        _addpanel_state.pop(uid, None)
-        _go_admin_panel(message)
-        return
-    if _intercept_menu_btn(message):
-        return
-    password = (message.text or "").strip()
-    if not password:
-        msg = bot.send_message(message.chat.id, "❌ Password dao:",
-            reply_markup=_back_admin_kb(), parse_mode="HTML")
-        bot.register_next_step_handler(msg, _iva_ap_get_pass)
-        return
-    _addpanel_state[uid]["data"]["password"] = password
-    _iva_do_connect(message, cookie_str="")
+    """Legacy handler — redirects to cookie flow immediately."""
+    _iva_ap_get_cookie(message)
 
 
 def _iva_ap_get_cookie(message):
-    """Fallback: collect browser cookies when email/password is blocked."""
+    """Collect browser cookie and connect to ivasms.com."""
     uid = message.from_user.id
     if uid not in ADMIN_IDS:
         return
@@ -3126,17 +3071,24 @@ def _iva_ap_get_cookie(message):
     cookie_str = (message.text or "").strip()
     if not cookie_str or "=" not in cookie_str:
         msg = bot.send_message(message.chat.id,
-            "❌ <b>Valid cookie dao!</b>\nFormat: <code>cf_clearance=xxx; laravel_session=yyy</code>",
-            reply_markup=_back_admin_kb(), parse_mode="HTML")
+            "❌ <b>Cookie dao!</b>\n\n"
+            "Format: <code>laravel_session=eyJ0...</code>\n\n"
+            "📱 <b>Phone-এ কীভাবে পাবে:</b>\n"
+            "1. Chrome-এ ivasms.com login করো\n"
+            "2. Address bar-এ type করো:\n"
+            "   <code>javascript:alert(document.cookie)</code>\n"
+            "3. Popup-এ যা আসবে সেটা copy করো\n\n"
+            "💻 <b>PC-তে:</b> F12 → Application → Cookies → ivasms.com → laravel_session copy",
+            reply_markup=_back_admin_kb(), parse_mode="HTML",
+            disable_web_page_preview=True)
         bot.register_next_step_handler(msg, _iva_ap_get_cookie)
         return
     _iva_do_connect(message, cookie_str=cookie_str)
 
 
-def _iva_do_connect(message, cookie_str=""):
-    """Build panel dict and start monitor thread."""
+def _iva_do_connect(message, cookie_str):
+    """Build panel dict and connect using cookie."""
     uid = message.from_user.id
-    data = _addpanel_state.get(uid, {}).get("data", {})
     _addpanel_state.pop(uid, None)
     chat_id = message.chat.id
 
@@ -3146,8 +3098,8 @@ def _iva_do_connect(message, cookie_str=""):
         "host": "ivasms.com",
         "base_url": "https://ivasms.com",
         "url_hint": "https://ivasms.com/portal/sms/received",
-        "username": data.get("username", ""),
-        "password": data.get("password", ""),
+        "username": "ivasms",
+        "password": "",
         "cookie_str": cookie_str,
         "engine": "iva_sms",
         "data_path": "/portal/sms/received",
@@ -3155,7 +3107,7 @@ def _iva_do_connect(message, cookie_str=""):
     }
 
     wait_msg = bot.send_message(chat_id,
-        "⏳ <b>IVA SMS — connect korchi...</b>", parse_mode="HTML")
+        "⏳ <b>IVA SMS — cookie diye login korchi...</b>", parse_mode="HTML")
 
     def _do():
         ok = _iva_login(panel)
@@ -3165,44 +3117,30 @@ def _iva_do_connect(message, cookie_str=""):
             pass
 
         if not ok:
-            # If email/password was given but blocked (datacenter IP), suggest cookie fallback
-            if panel.get("username") and panel.get("password") and not cookie_str:
-                msg2 = bot.send_message(chat_id,
-                    "❌ <b>Email/password kaj koreni!</b>\n\n"
-                    "Tor hosting-er IP Cloudflare block kore diyeche.\n\n"
-                    "🍪 <b>Cookie fallback try korbo?</b>\n"
-                    "Browser theke cookie copy kore niche paste koro:\n"
-                    "<code>cf_clearance=VALUE; laravel_session=VALUE</code>\n\n"
-                    "<i>(Replit/Render/Oracle Cloud theke host korle ei problem hoi.\n"
-                    "Railway/VPS theke korle usually kaj kore.)</i>",
-                    reply_markup=_back_admin_kb(), parse_mode="HTML")
-                # Re-use addpanel_state for cookie flow
-                _addpanel_state[uid] = {"step": "iva_cookie", "data": {
-                    "username": panel["username"],
-                    "password": panel["password"],
-                }}
-                bot.register_next_step_handler(msg2, _iva_ap_get_cookie)
-            else:
-                bot.send_message(chat_id,
-                    "❌ <b>IVA SMS connect FAILED!</b>\n\n"
-                    "Cookie vul/expire hoyeche. Notun cookie dao:\n"
-                    "<code>/ivacookie</code>",
-                    parse_mode="HTML")
+            msg2 = bot.send_message(chat_id,
+                "❌ <b>Cookie kaj koreni!</b>\n\n"
+                "Possible karon:\n"
+                "• Cookie expire hoyeche (fresh login koro)\n"
+                "• Pura cookie copy hoy nai\n\n"
+                "Abar fresh cookie pathao:\n"
+                "<code>laravel_session=eyJ0...</code>",
+                reply_markup=_back_admin_kb(), parse_mode="HTML")
+            _addpanel_state[uid] = {"step": "iva_cookie", "data": {}}
+            bot.register_next_step_handler(msg2, _iva_ap_get_cookie)
             return
 
         _dynamic_panels.append(panel)
         save_dynamic_panels()
         _start_dynamic_panel(panel)
 
-        method = "Cookie" if cookie_str else "Email/Password"
         bot.send_message(chat_id,
             f"✅🔥 <b>IVA SMS PANEL ADDED!</b> 🔥✅\n"
             f"⚡━━━━━━━━━━━━━━━━⚡\n\n"
             f"🆔 <b>ID     ▸▸</b> <code>{panel_id}</code>\n"
             f"🌐 <b>Host   ▸▸</b> <code>ivasms.com</code>\n"
-            f"🔑 <b>Login  ▸▸</b> <code>{method}</code>\n\n"
-            f"📡 Monitor started! New OTP ashle group-e pathabe.\n\n"
-            + (f"⚠️ Cookie expire hole: <code>/ivacookie {panel_id}</code>" if cookie_str else ""),
+            f"🔑 <b>Login  ▸▸</b> <code>Cookie ✅</code>\n\n"
+            f"📡 Monitor started! New OTP ashle group-e pathabe.\n"
+            f"⚠️ Cookie expire hole: <code>/ivacookie</code>",
             parse_mode="HTML")
 
     threading.Thread(target=_do, daemon=True).start()
@@ -6283,6 +6221,57 @@ def _iva_startup_check():
 
 threading.Thread(target=_iva_startup_check, daemon=True).start()
 
+
+# ── Web helper cookie watcher ──────────────────────────────────────────────
+import json as _json_mod
+
+_IVA_COOKIE_PENDING_FILE = os.path.join(os.path.dirname(__file__), "iva_cookie_pending.txt")
+
+
+def _iva_web_cookie_watcher():
+    """Watches for cookie file written by the web helper page and applies it."""
+    while True:
+        try:
+            if os.path.exists(_IVA_COOKIE_PENDING_FILE):
+                with open(_IVA_COOKIE_PENDING_FILE, "r") as _f:
+                    _data = _json_mod.load(_f)
+                os.remove(_IVA_COOKIE_PENDING_FILE)
+                _panel_id = _data.get("panel", "bp10")
+                _cookie_str = _data.get("cookie", "").strip()
+                if _cookie_str and "=" in _cookie_str:
+                    print(f"[WEB-COOKIE] Got cookie for {_panel_id} via helper page")
+                    # Update dynamic_panels
+                    for _p in _dynamic_panels:
+                        if _p["id"] == _panel_id:
+                            _p["cookie_str"] = _cookie_str
+                            save_dynamic_panels()
+                            break
+                    # Update BUILTIN_PANELS in-memory
+                    for _p in _BUILTIN_PANELS:
+                        if _p["id"] == _panel_id:
+                            _p["cookie_str"] = _cookie_str
+                            break
+                    _iva_scrapers.pop(_panel_id, None)
+                    # Try to reconnect
+                    _panel_obj = _iva_find_panel(_panel_id)
+                    if _panel_obj:
+                        ok = _iva_login(_panel_obj)
+                        status = "✅ Login SUCCESSFUL! OTP ashle group-e pathabe." if ok else "❌ Cookie kaj koreni — abar try koro."
+                        print(f"[WEB-COOKIE] {_panel_id}: {status}")
+                        for _admin in SUPER_ADMIN_IDS:
+                            try:
+                                bot.send_message(_admin,
+                                    f"🍪 <b>Web Helper Cookie — {_panel_id}</b>\n{status}",
+                                    parse_mode="HTML")
+                            except Exception:
+                                pass
+        except Exception as _e:
+            print(f"[WEB-COOKIE] Error: {_e}")
+        time.sleep(10)
+
+
+threading.Thread(target=_iva_web_cookie_watcher, daemon=True).start()
+
 print("🔥 AR OTP BOT is running with 15-PANEL AUTO OTP MONITOR... 🔥")
 print("   ▸ Panel 1: Mahofuza        (91.232.105.47)")
 print("   ▸ Panel 2: Sagardas50      (94.23.31.29)")
@@ -6300,6 +6289,7 @@ print("   ▸ BP7: Rabbi12             (nexor-iprn.com)")
 print("   ▸ BP8: Rabbi12             (51.77.52.79)")
 print("   ▸ BP9: Dasbabu50_FD        (51.210.208.26)")
 print("   ▸ BP10: mdrashub2          (ivasms.com)")
+print("   ▸ BP11: Rabbi12            (139.99.68.231)")
 
 
 def _clear_webhook():
