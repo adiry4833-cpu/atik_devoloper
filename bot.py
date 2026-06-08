@@ -102,7 +102,7 @@ _BUILTIN_PANELS = [
     {'id': 'bp1', 'host': '139.99.69.196', 'base_url': 'http://139.99.69.196/ints', 'url_hint': 'http://139.99.69.196/ints/agent/SMSCDRStats', 'username': 'Mahofuza12', 'password': 'Mahofuza12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
     {'id': 'bp2', 'host': '139.99.9.4', 'base_url': 'http://139.99.9.4/ints', 'url_hint': 'http://139.99.9.4/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
     {'id': 'bp3', 'host': '54.36.173.235', 'base_url': 'http://54.36.173.235/ints', 'url_hint': 'http://54.36.173.235/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
-    {'id': 'bp4', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/agent/SMSCDRStats', 'username': 'Rabbi5', 'password': 'Rabbi5', 'engine': 'ints_smsranges', 'data_path': '/agent/res/data_smsranges.php', 'admin_id': None},
+    {'id': 'bp4', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/agent/SMSCDRStats', 'username': 'Rabbi5', 'password': 'Rabbi5', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
     {'id': 'bp5', 'host': '213.32.24.208', 'base_url': 'http://213.32.24.208/ints', 'url_hint': 'http://213.32.24.208/ints/agent/SMSCDRStats', 'username': 'mahofuza', 'password': 'mahofuza@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
     {'id': 'bp6', 'host': '15.235.182.3', 'base_url': 'http://15.235.182.3/konekta', 'url_hint': 'http://15.235.182.3/konekta/agent/SMSCDRReports', 'username': 'Rabbi200', 'password': 'Rabbi200', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
     {'id': 'bp7', 'host': 'nexor-iprn.com', 'base_url': 'https://nexor-iprn.com', 'url_hint': 'https://nexor-iprn.com/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
@@ -111,6 +111,12 @@ _BUILTIN_PANELS = [
     {'id': 'bp10', 'host': 'ivasms.com', 'base_url': 'https://ivasms.com', 'url_hint': 'https://ivasms.com/portal/sms/received', 'username': 'mdrashub2@gmail.com', 'password': 'Rabbi+nnn', 'engine': 'iva_sms', 'data_path': '/portal/sms/received', 'admin_id': None},
     {'id': 'bp11', 'host': '139.99.68.231', 'base_url': 'http://139.99.68.231/ints', 'url_hint': 'http://139.99.68.231/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
     {'id': 'bp12', 'host': '51.75.144.178', 'base_url': 'http://51.75.144.178/ints', 'url_hint': 'http://51.75.144.178/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
+    {'id': 'd20591', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/client/SMSCDRStats', 'username': 'Atik9898', 'password': 'Atik9898', 'engine': 'html_scrape', 'data_path': 'http://54.39.104.241/ints/client/SMSCDRStats', 'admin_id': 6664150885},
+    {'id': 'd20984', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/agent/SMSCDRStats', 'username': 'Rabbi5', 'password': 'Rabbi5', 'engine': 'ints_smsranges', 'data_path': '/agent/res/data_smsranges.php', 'admin_id': 6664150885},
+    {'id': 'pscall1', 'host': 'pscall.net', 'base_url': 'http://pscall.net/restapi', 'url_hint': 'http://pscall.net/restapi/smsreport', 'username': 'api:pscall.net', 'password': '', 'api_key': 'SFNSQz1SS2NygIF6QlBR', 'api_key_param': 'key', 'engine': 'api_key', 'data_path': '/smsreport', 'admin_id': None},
+    {'id': 'd34527', 'host': '151.80.19.204', 'base_url': 'http://151.80.19.204/ints', 'url_hint': 'http://151.80.19.204/ints/agent/SMSCDRStats', 'username': 'Atik9898', 'password': 'Atik9898', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': 6664150885},
+    {'id': 'd39020', 'host': '139.99.69.196', 'base_url': 'http://139.99.69.196/ints', 'url_hint': 'http://139.99.69.196/ints/agent/SMSCDRStats', 'username': 'Mahofuza12', 'password': 'Mahofuza12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': 6664150885},
+    {'id': 'd42653', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/agent/SMSCDRStats', 'username': 'Rabbi5', 'password': 'Rabbi5', 'engine': 'ints_smsranges', 'data_path': '/agent/res/data_smsranges.php', 'admin_id': 6664150885},
 ]
 # <<SYNC:_BUILTIN_PANELS:END>>
 
@@ -260,6 +266,7 @@ _group_settings = load_json(GROUP_SETTINGS_FILE, {
     'channel2': '',
     'bot_link': '',
     'support_id': '',
+    'group_otp_send': True,
 })
 # <<SYNC:_group_settings_defaults:END>>
 
@@ -658,14 +665,20 @@ def send_otp_message(chat_id, otp, number, seconds, service=""):
             print(f"[OTP-DM] ❌ FAILED to send OTP={otp_str} to user {chat_id} — rate limited {rl}s")
 
 
+def is_group_otp_send_enabled():
+    return _group_settings.get("group_otp_send", True)
+
+
 def _dispatch_otp(otp, number, seconds, service=""):
     grp = get_otp_group_id()
     clean = re.sub(r"\D", "", str(number))
     with user_map_lock:
         uid = user_map.get(clean)
-    print(f"[DISPATCH] OTP={otp} num={number} svc={service} group={grp} user_dm={uid}")
-    if grp:
+    print(f"[DISPATCH] OTP={otp} num={number} svc={service} group={grp} user_dm={uid} grp_send={is_group_otp_send_enabled()}")
+    if grp and is_group_otp_send_enabled():
         send_otp_message(grp, otp, number, seconds, service)
+    elif grp and not is_group_otp_send_enabled():
+        print(f"[DISPATCH] ℹ️ Group OTP send is DISABLED — skipping group send (DM only mode)")
     else:
         print(f"[DISPATCH] ⚠️ No OTP group configured — skipping group send!")
     if uid:
@@ -1302,6 +1315,9 @@ def _universal_fetch(panel):
     # IVA SMS has its own fetcher
     if engine == "iva_sms":
         return _iva_fetch(panel)
+    # API Key panels have their own fetcher
+    if engine == "api_key":
+        return _api_key_fetch(panel)
     data_path = panel.get("data_path", "/agent/res/data_smscdr.php")
     style = "xisora" if engine == "xisora" else "ints"
     found = {}
@@ -1481,6 +1497,144 @@ def _univ_parse_row(row, engine):
         pass
     return None
 
+
+# ── API Key Panel Engine ───────────────────────────────────────────────────────
+
+_API_KEY_ENDPOINTS = [
+    "/api/sms",
+    "/api/messages",
+    "/api/received",
+    "/api/sms/received",
+    "/api/v1/sms",
+    "/api/v1/messages",
+    "/api/inbox",
+    "/api/sms/list",
+    "/api/data",
+    "/sms",
+    "/api/otp",
+]
+
+_API_KEY_PARAMS = ["api_key", "token", "key", "apikey", "access_token"]
+
+
+def _api_key_test(base_url, api_key):
+    """Try common API endpoints with key. Returns (path, param_style) or (None, None).
+    param_style: 'bearer', 'api_key=xxx', 'token=xxx', etc.
+    """
+    base = base_url.rstrip("/")
+    hdrs = {"Accept": "application/json", "User-Agent": _UA}
+    for path in _API_KEY_ENDPOINTS:
+        # Try query param variants
+        for param in _API_KEY_PARAMS:
+            try:
+                r = requests.get(
+                    f"{base}{path}?{param}={api_key}",
+                    timeout=8, verify=False, headers=hdrs,
+                )
+                if r.status_code == 200:
+                    try:
+                        data = r.json()
+                        if isinstance(data, list):
+                            print(f"[APIKEY-TEST] ✅ {path}?{param}= → array")
+                            return path, param
+                        if isinstance(data, dict):
+                            for dk in ("data", "sms", "messages", "records", "result", "items", "list"):
+                                if dk in data and isinstance(data[dk], list):
+                                    print(f"[APIKEY-TEST] ✅ {path}?{param}= → dict.{dk}")
+                                    return path, f"{param}|resp={dk}"
+                            if any(k in data for k in ("status", "success", "ok", "error")):
+                                print(f"[APIKEY-TEST] ✅ {path}?{param}= → status obj")
+                                return path, param
+                    except Exception:
+                        pass
+            except Exception:
+                continue
+        # Try Authorization: Bearer header
+        try:
+            r = requests.get(
+                f"{base}{path}", timeout=8, verify=False,
+                headers={**hdrs, "Authorization": f"Bearer {api_key}"},
+            )
+            if r.status_code == 200:
+                try:
+                    data = r.json()
+                    if isinstance(data, (list, dict)):
+                        print(f"[APIKEY-TEST] ✅ {path} → Bearer header")
+                        return path, "bearer"
+                except Exception:
+                    pass
+        except Exception:
+            continue
+    return None, None
+
+
+def _api_key_fetch(panel):
+    """Fetch OTPs from an API-key authenticated panel."""
+    pid      = panel["id"]
+    base     = panel["base_url"].rstrip("/")
+    api_key  = panel.get("api_key", "")
+    data_path = panel.get("data_path", "/api/sms")
+    param_style = panel.get("api_key_param", "api_key")
+    found = {}
+    try:
+        hdrs = {"Accept": "application/json", "User-Agent": _UA}
+        if param_style == "bearer":
+            url = f"{base}{data_path}"
+            hdrs["Authorization"] = f"Bearer {api_key}"
+        elif "|resp=" in param_style:
+            pname = param_style.split("|resp=")[0]
+            url = f"{base}{data_path}?{pname}={api_key}"
+        else:
+            url = f"{base}{data_path}?{param_style}={api_key}"
+
+        r = requests.get(url, timeout=15, verify=False, headers=hdrs)
+        if r.status_code != 200:
+            print(f"[{pid}] API key fetch HTTP {r.status_code}")
+            _record_error(pid)
+            return found
+
+        raw = r.json()
+        rows = []
+        if isinstance(raw, list):
+            rows = raw
+        elif isinstance(raw, dict):
+            resp_key = param_style.split("|resp=")[1] if "|resp=" in param_style else None
+            if resp_key and resp_key in raw:
+                rows = raw[resp_key]
+            else:
+                for dk in ("data", "sms", "messages", "records", "result", "items", "list"):
+                    if dk in raw and isinstance(raw[dk], list):
+                        rows = raw[dk]
+                        break
+
+        for row in rows:
+            number = sms_txt = service = ""
+            if isinstance(row, dict):
+                number  = str(row.get("number") or row.get("phone") or row.get("msisdn") or
+                              row.get("from") or row.get("sender") or row.get("to") or "").strip()
+                sms_txt = str(row.get("message") or row.get("sms") or row.get("text") or
+                              row.get("body") or row.get("content") or "").strip()
+                service = str(row.get("service") or row.get("sender") or row.get("source") or "").strip()
+            elif isinstance(row, list):
+                if len(row) > 2: number  = str(row[2]).strip()
+                if len(row) > 5: sms_txt = str(row[5]).strip()
+                elif len(row) > 3: sms_txt = str(row[3]).strip()
+                if len(row) > 3: service = str(row[3]).strip()
+            otp = extract_otp_from_sms(sms_txt)
+            if number and otp:
+                key = f"{number}:{sms_txt}"
+                found[key] = (number, otp, sms_txt, service)
+
+        _record_fetch(pid, len(rows))
+        if found:
+            print(f"[{pid}] ✅ API key: {len(rows)} rows, {len(found)} OTPs")
+    except Exception as e:
+        print(f"[{pid}] API key fetch error: {e}")
+        _record_error(pid)
+    return found
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 
 def _start_dynamic_panel(panel):
     pid = panel["id"]
@@ -1865,9 +2019,20 @@ def _iva_fetch(panel):
 def extract_otp_from_sms(sms_text):
     if not sms_text:
         return None
-    # Must have at least 1 letter — pure digit/symbol strings like "0012" or "0.00" are
-    # range codes / payout amounts, never real OTPs.  Also ignore very short garbage.
-    if len(sms_text) < 5 or not re.search(r"[a-zA-Z]", sms_text):
+    sms_text = str(sms_text).strip()
+    if len(sms_text) < 4:
+        return None
+    # Pure short numeric codes (4-8 digits only) — treat directly as OTP
+    # WhatsApp/Telegram panels sometimes store just the raw code
+    if re.match(r"^\d{4,8}$", sms_text):
+        return sms_text
+    # WhatsApp format: "123-456" or "123 456" (digits separated by dash/space)
+    wa_m = re.match(r"^(\d{3})[- ](\d{3})$", sms_text)
+    if wa_m:
+        return wa_m.group(1) + wa_m.group(2)
+    # Must have at least 1 letter for longer strings — pure long digit strings
+    # (e.g. phone numbers "88017XXXXXXX") are not OTPs
+    if not re.search(r"[a-zA-Z]", sms_text):
         return None
     cleaned = re.sub(r"(?<=\d) (?=\d)", "", sms_text)
     cleaned = re.sub(r"(\d)-(\d)", r"\1\2", cleaned)
@@ -2848,24 +3013,24 @@ def _clr_service_markup():
 def addpanel_cmd(message):
     if message.from_user.id not in ADMIN_IDS:
         return
-    _addpanel_state[message.from_user.id] = {"step": "url", "data": {}}
-    msg = bot.send_message(
-        message.chat.id,
+    _show_addpanel_type_select(message.chat.id, message.from_user.id)
+
+
+def _show_addpanel_type_select(chat_id, uid):
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    markup.add(
+        types.InlineKeyboardButton("🔑 Username + Password দিয়ে Add", callback_data="aptype:pass"),
+        types.InlineKeyboardButton("🗝️ API Key দিয়ে Add", callback_data="aptype:apikey"),
+    )
+    bot.send_message(
+        chat_id,
         "🔧🔥 <b>ADD NEW PANEL</b> 🔥🔧\n\n"
-        "📡 <b>Step 1/3:</b> Panel-er jekono URL pathao\n\n"
-        "✅ <b>Jekono format support kore:</b>\n"
-        "• <code>http://1.2.3.4</code>\n"
-        "• <code>http://1.2.3.4/ints</code>\n"
-        "• <code>http://1.2.3.4/konekta</code>\n"
-        "• <code>http://1.2.3.4/konekta/agent/SMSCDRReports</code>\n"
-        "• <code>http://1.2.3.4/ints/agent/SMSCDRStats</code>\n"
-        "• <code>https://panel.example.com/agent/SMSRanges</code>\n"
-        "• <code>https://truesms.net</code>\n\n"
-        "🤖 <i>Jekono path prefix hok — auto-detect korbe login, endpoint sob kisu!</i>",
-        reply_markup=_back_admin_kb(),
+        "Panel কীভাবে add করতে চাও?\n\n"
+        "🔑 <b>Username + Password</b> — সাধারণ login করে add\n"
+        "🗝️ <b>API Key</b> — panel-এর API key দিয়ে add",
+        reply_markup=markup,
         parse_mode="HTML",
     )
-    bot.register_next_step_handler(msg, _ap_get_url)
 
 
 def _ap_get_url(message):
@@ -3156,6 +3321,169 @@ def _iva_do_connect(message, cookie_str):
             f"📡 Monitor started! New OTP ashle group-e pathabe.\n"
             f"⚠️ Cookie expire hole: <code>/ivacookie</code>",
             parse_mode="HTML")
+
+    threading.Thread(target=_do, daemon=True).start()
+
+
+# ── API Key Panel Add Flow ─────────────────────────────────────────────────────
+
+_apk_state = {}   # uid → {"url": ..., "api_key": ...}
+
+
+def _apk_start(message):
+    """Ask for panel URL (Step 1 of API key flow)."""
+    uid = message.from_user.id
+    if uid not in ADMIN_IDS:
+        return
+    _apk_state[uid] = {}
+    msg = bot.send_message(
+        message.chat.id,
+        "🗝️🔥 <b>API KEY দিয়ে PANEL ADD</b> 🔥🗝️\n\n"
+        "📡 <b>Step 1/2:</b> Panel-এর URL পাঠাও\n\n"
+        "✅ <b>যেকোনো format চলবে:</b>\n"
+        "• <code>http://1.2.3.4</code>\n"
+        "• <code>http://1.2.3.4/api</code>\n"
+        "• <code>https://mypanel.com</code>\n"
+        "• <code>https://mypanel.com/api/sms</code>",
+        reply_markup=_back_admin_kb(),
+        parse_mode="HTML",
+    )
+    bot.register_next_step_handler(msg, _apk_get_url)
+
+
+def _apk_get_url(message):
+    uid = message.from_user.id
+    if uid not in ADMIN_IDS:
+        return
+    if _is_back(message.text):
+        _apk_state.pop(uid, None)
+        _go_admin_panel(message)
+        return
+    if _intercept_menu_btn(message):
+        return
+    url = (message.text or "").strip()
+    if not re.match(r"https?://", url, re.IGNORECASE):
+        msg = bot.send_message(
+            message.chat.id,
+            "❌ Valid URL দাও! (http:// বা https:// দিয়ে শুরু করো)",
+            reply_markup=_back_admin_kb(), parse_mode="HTML",
+        )
+        bot.register_next_step_handler(msg, _apk_get_url)
+        return
+    # Extract base URL
+    m = re.match(r"(https?://[^/]+(?:/[^?#]*)?)", url, re.IGNORECASE)
+    base_url = m.group(1).rstrip("/") if m else url.rstrip("/")
+    # If URL contains known API paths, strip them to get clean base
+    for suffix in ["/api/sms", "/api/messages", "/api/received", "/api/v1", "/api"]:
+        if base_url.lower().endswith(suffix):
+            base_url = base_url[: -len(suffix)]
+            break
+    _apk_state[uid]["base_url"] = base_url
+    host_m = re.search(r"//([^/]+)", base_url)
+    _apk_state[uid]["host"] = host_m.group(1) if host_m else base_url
+
+    msg = bot.send_message(
+        message.chat.id,
+        f"✅ URL: <code>{base_url}</code>\n\n"
+        "🗝️ <b>Step 2/2:</b> Panel-এর <b>API Key</b> পাঠাও:\n\n"
+        "<i>Panel-এর settings/profile/API section থেকে copy করো।</i>",
+        reply_markup=_back_admin_kb(),
+        parse_mode="HTML",
+    )
+    bot.register_next_step_handler(msg, _apk_get_key)
+
+
+def _apk_get_key(message):
+    uid = message.from_user.id
+    if uid not in ADMIN_IDS:
+        return
+    if _is_back(message.text):
+        _apk_state.pop(uid, None)
+        _go_admin_panel(message)
+        return
+    if _intercept_menu_btn(message):
+        return
+    api_key = (message.text or "").strip()
+    if not api_key:
+        msg = bot.send_message(message.chat.id, "❌ API Key দাও:", reply_markup=_back_admin_kb())
+        bot.register_next_step_handler(msg, _apk_get_key)
+        return
+
+    base_url = _apk_state.get(uid, {}).get("base_url", "")
+    host     = _apk_state.get(uid, {}).get("host", "")
+    _apk_state.pop(uid, None)
+    chat_id  = message.chat.id
+
+    wait_msg = bot.send_message(
+        chat_id,
+        "⏳🔍 <b>API Key test করছি...</b>\n"
+        "<i>Common endpoints probe করছি, একটু অপেক্ষা করো...</i>",
+        parse_mode="HTML",
+    )
+
+    def _do():
+        panel_id   = f"apk{int(time.time()) % 100000}"
+        det_path, det_param = _api_key_test(base_url, api_key)
+        try:
+            bot.delete_message(chat_id, wait_msg.message_id)
+        except Exception:
+            pass
+
+        if not det_path:
+            # Force-add option — user may know their endpoint
+            _apk_state[uid] = {}
+            markup = types.InlineKeyboardMarkup(row_width=1)
+            markup.add(
+                types.InlineKeyboardButton(
+                    "⚠️ Force Add করো (Endpoint Manual দেব)",
+                    callback_data=f"apkforce:{panel_id}|{base_url}|{api_key}",
+                ),
+                types.InlineKeyboardButton("❌ বাদ দাও", callback_data=f"apkforce_cancel"),
+            )
+            bot.send_message(
+                chat_id,
+                "⚠️ <b>API Endpoint auto-detect হলো না!</b>\n\n"
+                f"🌐 Host: <code>{host}</code>\n"
+                f"🗝️ Key: <code>{api_key[:8]}...</code>\n\n"
+                "সম্ভাব্য কারণ:\n"
+                "• এই panel-এ API নেই\n"
+                "• API key ভুল\n"
+                "• Panel-এর custom endpoint আছে\n\n"
+                "তবুও force add করতে চাইলে, পরে <b>/editpanel</b> দিয়ে endpoint দিতে পারবে।",
+                reply_markup=markup,
+                parse_mode="HTML",
+            )
+            return
+
+        panel = {
+            "id": panel_id,
+            "host": host,
+            "base_url": base_url,
+            "url_hint": f"{base_url}{det_path}",
+            "username": f"api:{host}",
+            "password": "",
+            "api_key": api_key,
+            "api_key_param": det_param,
+            "engine": "api_key",
+            "data_path": det_path,
+            "admin_id": uid,
+        }
+        _dynamic_panels.append(panel)
+        save_dynamic_panels()
+        _start_dynamic_panel(panel)
+
+        bot.send_message(
+            chat_id,
+            f"✅🔥 <b>API KEY PANEL ADDED!</b> 🔥✅\n"
+            f"⚡━━━━━━━━━━━━━━━━⚡\n\n"
+            f"🆔 <b>ID       ▸▸</b> <code>{panel_id}</code>\n"
+            f"🌐 <b>Host     ▸▸</b> <code>{host}</code>\n"
+            f"🗝️ <b>API Key  ▸▸</b> <code>{api_key[:12]}...</code>\n"
+            f"📂 <b>Endpoint ▸▸</b> <code>{det_path}</code>\n"
+            f"🔐 <b>Auth     ▸▸</b> <code>{det_param}</code>\n\n"
+            f"📡 Monitor thread started! /panels দিয়ে status দেখো।",
+            parse_mode="HTML",
+        )
 
     threading.Thread(target=_do, daemon=True).start()
 
@@ -3714,6 +4042,121 @@ def callback_handler(call):
             except Exception:
                 pass
             return
+
+        # ── API Key Panel type selection ──────────────────────────────────────
+        if data == "aptype:pass":
+            uid = call.from_user.id
+            if uid not in ADMIN_IDS:
+                bot.answer_callback_query(call.id, "❌ Permission নেই!")
+                return
+            bot.answer_callback_query(call.id)
+            try:
+                bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
+            except Exception:
+                pass
+            _addpanel_state[uid] = {"step": "url", "data": {}}
+            msg = bot.send_message(
+                call.message.chat.id,
+                "🔧🔥 <b>ADD NEW PANEL</b> 🔥🔧\n\n"
+                "📡 <b>Step 1/3:</b> Panel-এর URL পাঠাও\n\n"
+                "✅ <b>যেকোনো format চলবে:</b>\n"
+                "• <code>http://1.2.3.4</code>\n"
+                "• <code>http://1.2.3.4/ints</code>\n"
+                "• <code>http://1.2.3.4/konekta</code>\n"
+                "• <code>https://truesms.net</code>\n\n"
+                "🤖 <i>Login, captcha, endpoint সব auto-detect হবে!</i>",
+                reply_markup=_back_admin_kb(),
+                parse_mode="HTML",
+            )
+            bot.register_next_step_handler(msg, _ap_get_url)
+            return
+
+        if data == "aptype:apikey":
+            uid = call.from_user.id
+            if uid not in ADMIN_IDS:
+                bot.answer_callback_query(call.id, "❌ Permission নেই!")
+                return
+            bot.answer_callback_query(call.id)
+            try:
+                bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
+            except Exception:
+                pass
+            _apk_state[uid] = {}
+            msg = bot.send_message(
+                call.message.chat.id,
+                "🗝️🔥 <b>API KEY দিয়ে PANEL ADD</b> 🔥🗝️\n\n"
+                "📡 <b>Step 1/2:</b> Panel-এর URL পাঠাও\n\n"
+                "✅ <b>যেকোনো format চলবে:</b>\n"
+                "• <code>http://1.2.3.4</code>\n"
+                "• <code>http://1.2.3.4/api</code>\n"
+                "• <code>https://mypanel.com</code>\n"
+                "• <code>https://mypanel.com/api/sms</code>",
+                reply_markup=_back_admin_kb(),
+                parse_mode="HTML",
+            )
+            bot.register_next_step_handler(msg, _apk_get_url)
+            return
+
+        if data.startswith("apkforce:"):
+            uid = call.from_user.id
+            if uid not in ADMIN_IDS:
+                bot.answer_callback_query(call.id, "❌ Permission নেই!")
+                return
+            bot.answer_callback_query(call.id, "✅ Force Add হচ্ছে...")
+            try:
+                rest = data[len("apkforce:"):].split("|", 2)
+                panel_id = rest[0]
+                base_url = rest[1] if len(rest) > 1 else ""
+                api_key  = rest[2] if len(rest) > 2 else ""
+            except Exception:
+                bot.send_message(call.message.chat.id, "❌ Data parse error।", parse_mode="HTML")
+                return
+            host_m = re.search(r"//([^/]+)", base_url)
+            host   = host_m.group(1) if host_m else base_url
+            panel = {
+                "id": panel_id,
+                "host": host,
+                "base_url": base_url,
+                "url_hint": f"{base_url}/api/sms",
+                "username": f"api:{host}",
+                "password": "",
+                "api_key": api_key,
+                "api_key_param": "api_key",
+                "engine": "api_key",
+                "data_path": "/api/sms",
+                "admin_id": uid,
+            }
+            _dynamic_panels.append(panel)
+            save_dynamic_panels()
+            _start_dynamic_panel(panel)
+            try:
+                bot.edit_message_text(
+                    f"✅ <b>API KEY PANEL FORCE ADDED!</b>\n\n"
+                    f"🆔 <b>ID:</b> <code>{panel_id}</code>\n"
+                    f"🌐 <b>Host:</b> <code>{host}</code>\n"
+                    f"🗝️ <b>Key:</b> <code>{api_key[:12]}...</code>\n\n"
+                    f"⚠️ Endpoint auto-detect হয়নি — default <code>/api/sms</code> দিয়ে চলবে।\n"
+                    f"/panels দিয়ে status দেখো।",
+                    call.message.chat.id,
+                    call.message.message_id,
+                    parse_mode="HTML",
+                )
+            except Exception:
+                pass
+            return
+
+        if data == "apkforce_cancel":
+            bot.answer_callback_query(call.id, "বাদ দেওয়া হয়েছে।")
+            try:
+                bot.edit_message_text(
+                    "❌ API Key panel add বাতিল।\n/addpanel দিয়ে আবার চেষ্টা করো।",
+                    call.message.chat.id,
+                    call.message.message_id,
+                    parse_mode="HTML",
+                )
+            except Exception:
+                pass
+            return
         # ─────────────────────────────────────────────────────────────────────
 
         if data == "v":
@@ -4244,6 +4687,20 @@ def callback_handler(call):
                 call.id,
                 "✅ Auto Delete: " + ("🟢 ON" if not cur else "🔴 OFF"),
                 show_alert=False,
+            )
+            _show_settings_inline(call)
+
+        elif data == "toggle_grp_send":
+            if call.from_user.id not in ADMIN_IDS:
+                return
+            cur = _group_settings.get("group_otp_send", True)
+            _group_settings["group_otp_send"] = not cur
+            save_group_settings()
+            new_state = not cur
+            bot.answer_callback_query(
+                call.id,
+                "✅ Group OTP Send: " + ("🟢 ON — Group-e OTP jabey" if new_state else "🔴 OFF — Shudhu Inbox-e jabey"),
+                show_alert=True,
             )
             _show_settings_inline(call)
 
@@ -4851,21 +5308,7 @@ def text_handler(message):
             )
 
     elif txt == "➕ 𝗔𝗱𝗱 𝗣𝗮𝗻𝗲𝗹" and uid in ADMIN_IDS:
-        _addpanel_state[uid] = {"step": "url", "data": {}}
-        msg = bot.send_message(
-            message.chat.id,
-            "🔧🔥 <b>ADD NEW PANEL</b> 🔥🔧\n\n"
-            "📡 <b>Step 1/3:</b> Panel-er jekono URL pathao\n\n"
-            "✅ <b>Jekono format cholbe:</b>\n"
-            "• <code>http://1.2.3.4</code>\n"
-            "• <code>http://1.2.3.4/ints</code>\n"
-            "• <code>http://1.2.3.4/ints/agent/SMSCDRStats</code>\n"
-            "• <code>https://truesms.net</code>\n\n"
-            "🤖 <i>Panel type auto-detect hobe!</i>",
-            reply_markup=_back_admin_kb(),
-            parse_mode="HTML",
-        )
-        bot.register_next_step_handler(msg, _ap_get_url)
+        _show_addpanel_type_select(message.chat.id, uid)
 
     elif txt == "➕ 𝗔𝗱𝗱 𝗦𝗲𝗿𝘃𝗶𝗰𝗲" and uid in ADMIN_IDS:
         _addservice_state[uid] = {}
@@ -5495,9 +5938,11 @@ def _settings_text(uid=None):
     bot_lnk = get_admin_setting(uid, "bot_link") if uid else _group_settings.get("bot_link", "")
     auto_del = _group_settings.get("auto_delete", True)
     del_secs = _group_settings.get("auto_delete_seconds", 3600)
+    grp_send = _group_settings.get("group_otp_send", True)
     id_str = f"<code>{grp_id}</code>" if grp_id else "❌ Set hoy nai"
     link_str = grp_link or "❌ Set hoy nai"
     auto_str = f"🟢 ON ({del_secs // 60} min)" if auto_del else "🔴 OFF"
+    grp_send_str = "🟢 ON (Group-e OTP jabey)" if grp_send else "🔴 OFF (Shudhu Inbox-e jabey)"
     ch2_str = ch2 or "❌ Set hoy nai"
     bot_str = bot_lnk or "❌ Set hoy nai"
     return (
@@ -5506,7 +5951,8 @@ def _settings_text(uid=None):
         "📡 <b>OTP GROUP</b>\n"
         f"🔗 Link: {link_str}\n"
         f"🆔 Chat ID: {id_str}\n"
-        f"⏱️ Auto Delete: {auto_str}\n\n"
+        f"⏱️ Auto Delete: {auto_str}\n"
+        f"📤 Group OTP Send: {grp_send_str}\n\n"
         "📢 <b>LINKS</b>\n"
         f"📢 Join Channel: {ch2_str}\n"
         f"🤖 Bot Link: {bot_str}\n\n"
@@ -5517,7 +5963,9 @@ def _settings_text(uid=None):
 
 def _settings_markup():
     auto_del = _group_settings.get("auto_delete", True)
+    grp_send = _group_settings.get("group_otp_send", True)
     auto_label = "⏱️ Auto Delete: 🟢 ON" if auto_del else "⏱️ Auto Delete: 🔴 OFF"
+    grp_send_label = "📤 Group Send: 🟢 ON" if grp_send else "📤 Group Send: 🔴 OFF"
     markup = types.InlineKeyboardMarkup(row_width=2)
     markup.add(
         types.InlineKeyboardButton("🔗 Group Link", callback_data="grp_setlink"),
@@ -5526,6 +5974,9 @@ def _settings_markup():
     markup.add(
         types.InlineKeyboardButton(auto_label, callback_data="set_autodel"),
         types.InlineKeyboardButton("🗑️ Remove Group", callback_data="grp_remove"),
+    )
+    markup.add(
+        types.InlineKeyboardButton(grp_send_label, callback_data="toggle_grp_send"),
     )
     markup.add(
         types.InlineKeyboardButton("📢 Join Channel", callback_data="set_channel2"),
