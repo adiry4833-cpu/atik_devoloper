@@ -102,7 +102,7 @@ _BUILTIN_PANELS = [
     {'id': 'bp1', 'host': '139.99.69.196', 'base_url': 'http://139.99.69.196/ints', 'url_hint': 'http://139.99.69.196/ints/agent/SMSCDRStats', 'username': 'Mahofuza12', 'password': 'Mahofuza12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
     {'id': 'bp2', 'host': '139.99.9.4', 'base_url': 'http://139.99.9.4/ints', 'url_hint': 'http://139.99.9.4/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
     {'id': 'bp3', 'host': '54.36.173.235', 'base_url': 'http://54.36.173.235/ints', 'url_hint': 'http://54.36.173.235/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
-    {'id': 'bp4', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/agent/SMSCDRStats', 'username': 'Rabbi5', 'password': 'Rabbi5', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
+    {'id': 'bp4', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/agent/SMSCDRStats', 'username': 'Rabbi5', 'password': 'Rabbi5', 'engine': 'ints_smsranges', 'data_path': '/agent/res/data_smsranges.php', 'admin_id': None},
     {'id': 'bp5', 'host': '213.32.24.208', 'base_url': 'http://213.32.24.208/ints', 'url_hint': 'http://213.32.24.208/ints/agent/SMSCDRStats', 'username': 'mahofuza', 'password': 'mahofuza@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
     {'id': 'bp6', 'host': '15.235.182.3', 'base_url': 'http://15.235.182.3/konekta', 'url_hint': 'http://15.235.182.3/konekta/agent/SMSCDRReports', 'username': 'Rabbi200', 'password': 'Rabbi200', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
     {'id': 'bp7', 'host': 'nexor-iprn.com', 'base_url': 'https://nexor-iprn.com', 'url_hint': 'https://nexor-iprn.com/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
@@ -111,8 +111,8 @@ _BUILTIN_PANELS = [
     {'id': 'bp10', 'host': 'ivasms.com', 'base_url': 'https://ivasms.com', 'url_hint': 'https://ivasms.com/portal/sms/received', 'username': 'mdrashub2@gmail.com', 'password': 'Rabbi+nnn', 'engine': 'iva_sms', 'data_path': '/portal/sms/received', 'admin_id': None},
     {'id': 'bp11', 'host': '139.99.68.231', 'base_url': 'http://139.99.68.231/ints', 'url_hint': 'http://139.99.68.231/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
     {'id': 'bp12', 'host': '51.75.144.178', 'base_url': 'http://51.75.144.178/ints', 'url_hint': 'http://51.75.144.178/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
-    {'id': 'd20591', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/client/SMSCDRStats', 'username': 'Atik9898', 'password': 'Atik9898', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': 6664150885},
-    {'id': 'd20984', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/agent/SMSCDRStats', 'username': 'Rabbi5', 'password': 'Rabbi5', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': 6664150885},
+    {'id': 'd20591', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/client/SMSCDRStats', 'username': 'Atik9898', 'password': 'Atik9898', 'engine': 'html_scrape', 'data_path': 'http://54.39.104.241/ints/client/SMSCDRStats', 'admin_id': 6664150885},
+    {'id': 'd20984', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/agent/SMSCDRStats', 'username': 'Rabbi5', 'password': 'Rabbi5', 'engine': 'ints_smsranges', 'data_path': '/agent/res/data_smsranges.php', 'admin_id': 6664150885},
     {'id': 'pscall1', 'host': 'pscall.net', 'base_url': 'http://pscall.net/restapi', 'url_hint': 'http://pscall.net/restapi/smsreport', 'username': 'api:pscall.net', 'password': '', 'api_key': 'SFNSQz1SS2NygIF6QlBR', 'api_key_param': 'key', 'engine': 'api_key', 'data_path': '/smsreport', 'admin_id': None},
     {'id': 'd34527', 'host': '151.80.19.204', 'base_url': 'http://151.80.19.204/ints', 'url_hint': 'http://151.80.19.204/ints/agent/SMSCDRStats', 'username': 'Atik9898', 'password': 'Atik9898', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': 6664150885},
     {'id': 'd39020', 'host': '139.99.69.196', 'base_url': 'http://139.99.69.196/ints', 'url_hint': 'http://139.99.69.196/ints/agent/SMSCDRStats', 'username': 'Mahofuza12', 'password': 'Mahofuza12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': 6664150885},
@@ -340,7 +340,7 @@ TEMPLATES_FILE = "message_templates.json"
 # <<SYNC:_DEFAULT_TEMPLATES:START>>
 _DEFAULT_TEMPLATES = {
     'start': '🔥 <b>𝗔𝗥 𝗢𝗧𝗣 𝗕𝗢𝗧-𝗲 𝗦𝗔𝗚𝗢𝗧𝗢𝗠!</b> 🔥\n\n╔═════════════════════════════╗\n   🧾 <b>USER DASHBOARD</b>\n╠═════════════════════════════╣\n  👤 <b>User:</b> {uname}\n  🆔 <b>ID:</b> <code>{uid}</code>\n  📊 <b>Status:</b> 💎 Premium\n  🚀 <b>Workers:</b> 0\n╚═════════════════════════════╝\n\n╔══════════════════╗\n 𝗡𝗶𝗰𝗵𝗲𝗿 𝗰𝗵𝗮𝗻𝗻𝗲𝗹𝗲 <b>𝗝𝗢𝗜𝗡</b> 𝗵𝗼𝘆𝗲\n <b>𝗩𝗘𝗥𝗜𝗙𝗬</b> 𝗯𝗮𝘁𝗮𝗻𝗲 𝗰𝗹𝗶𝗰𝗸 𝗸𝗼𝗿𝗼!\n╚══════════════════╝\n\n🤖 <i>𝙋𝙤𝙬𝙚𝙧𝙚𝙙 𝙗𝙮</i>  <b>𝗔𝗥 𝗢𝗧𝗣 𝗕𝗢𝗧</b>',
-    'otp_group': '📱 <b><i>{svc}</i></b>{flag} | {number} | {flag}\n\n🔑 <b>KEY</b> : <b><i>{otp}</i></b>\n\n╭─────────────────╮\n📩 <b>MESSAGE</b>\n\n<i>{sms}</i>\n╰─────────────────╯\n💬 <i>Thanks for using</i> <b>@hot_otp_bot</b>',
+    'otp_group': '🌟══════════════🌟\n\xa0\xa0 🥵মাল আইছে রে🥵\n\n⚙️ Service: {svc}\n☎️ Number: {number}\n🌍 Country: {country} {flag}\n\n📲 OTP Code: {otp}\n\n📬 Massage: {sms}\n🌟══════════════🌟\n🌟 🅐🆃🅸🅺 🅾️🆃🅿️ 🅱️🅾️🆃 🌟',
     'otp_dm': '📱 <b><i>{svc}</i></b>{flag} | {number} | {flag}\n\n🔑 <b>KEY</b> : <b><i>{otp}</i></b>\n\n╭─────────────────╮\n📩 <b>MESSAGE</b>\n\n<i>{sms}</i>\n╰─────────────────╯\n💬 <i>Thanks for using</i> <b>@hot_otp_bot</b>',
     'verify_success': '🔥 <b>VERIFICATION COMPLETE!</b> 🔥\n\n╔═════════════════════════════╗\n   ✅ <b>ACCESS GRANTED</b>\n╠═════════════════════════════╣\n  👋 <b>Welcome, {vname}!</b>\n  🆔 <b>ID:</b> <code>{uid}</code>\n  📊 <b>Status:</b> 💎 Premium\n╚═════════════════════════════╝\n\n⚡ <b>𝗘𝗸𝗸𝗵𝗼𝗻 𝗻𝘂𝗺𝗯𝗮𝗿 𝗻𝗶𝘁𝗲 𝗽𝗮𝗿𝗯𝗲!</b> ⚡',
     'number_assigned': '✅ <b>Number Assigned Successfully !</b>\n\n🔧 <b>Platform :</b> {svc}\n🌍 <b>Country :</b> {flag} {country}\n\n📞 <b>Number :</b> <code>{number}</code>\n\n⏱ <b>Auto code fetch :</b> 10:00s',
@@ -875,7 +875,7 @@ seen_lock = threading.Lock()
 
 # ── Dynamic panel system ───────────────────────────────────────────────────────
 DYNAMIC_PANELS_FILE = "dynamic_panels.json"
-_dynamic_panels = load_json(DYNAMIC_PANELS_FILE, [])
+_dynamic_panels = load_json(DYNAMIC_PANELS_FILE, list(_BUILTIN_PANELS))
 _dynamic_sessions = {}
 _dynamic_locks = {}
 _addpanel_state = {}
@@ -3613,3 +3613,45 @@ def _iva_cookie_update_step(message):
 
 
 # ── IVA SMS
+
+# ── Startup: launch all builtin + dynamic panels ──────────────────────────────
+
+def _launch_all_panels():
+    """Start monitor threads for every panel (builtin + dynamic)."""
+    seen_ids = set()
+    all_panels = list(_dynamic_panels)
+    for p in _BUILTIN_PANELS:
+        if p.get("id") not in [x.get("id") for x in _dynamic_panels]:
+            all_panels.append(p)
+    for panel in all_panels:
+        pid = panel.get("id", "")
+        if pid in seen_ids:
+            continue
+        seen_ids.add(pid)
+        engine = panel.get("engine", "")
+        if engine == "iva_sms":
+            threading.Thread(target=lambda p=panel: _iva_login(p), daemon=True).start()
+        else:
+            _start_dynamic_panel(panel)
+    print(f"[START] ✅ {len(seen_ids)} panel monitor(s) launched.")
+
+
+if __name__ == "__main__":
+    if not API_TOKEN:
+        print("❌ ERROR: TELEGRAM_BOT_TOKEN env var not set. Exiting.")
+        import sys
+        sys.exit(1)
+
+    print("[START] 🤖 AR OTP BOT starting...")
+
+    # Remove any leftover webhook
+    try:
+        bot.remove_webhook()
+    except Exception:
+        pass
+
+    # Launch all panel monitors
+    _launch_all_panels()
+
+    print("[START] 🚀 Bot polling started. Waiting for messages...")
+    bot.infinity_polling(timeout=60, long_polling_timeout=30)
