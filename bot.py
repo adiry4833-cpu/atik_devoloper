@@ -111,13 +111,13 @@ _BUILTIN_PANELS = [
     {'id': 'bp10', 'host': 'ivasms.com', 'base_url': 'https://ivasms.com', 'url_hint': 'https://ivasms.com/portal/sms/received', 'username': 'mdrashub2@gmail.com', 'password': 'Rabbi+nnn', 'engine': 'iva_sms', 'data_path': '/portal/sms/received', 'admin_id': None},
     {'id': 'bp11', 'host': '139.99.68.231', 'base_url': 'http://139.99.68.231/ints', 'url_hint': 'http://139.99.68.231/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
     {'id': 'bp12', 'host': '51.75.144.178', 'base_url': 'http://51.75.144.178/ints', 'url_hint': 'http://51.75.144.178/ints/agent/SMSCDRStats', 'username': 'Rabbi12', 'password': 'Rabbi12@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': None},
-    {'id': 'd20591', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/client/SMSCDRStats', 'username': 'Atik9898', 'password': 'Atik9898', 'engine': 'html_scrape', 'data_path': 'http://54.39.104.241/ints/client/SMSCDRStats', 'admin_id': 6664150885},
+    {'id': 'd20591', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/client/SMSCDRStats', 'username': 'Atik9898', 'password': 'Atik9898', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': 6664150885},
     {'id': 'd20984', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/agent/SMSCDRStats', 'username': 'Rabbi5', 'password': 'Rabbi5', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': 6664150885},
     {'id': 'pscall1', 'host': 'pscall.net', 'base_url': 'http://pscall.net/restapi', 'url_hint': 'http://pscall.net/restapi/smsreport', 'username': 'api:pscall.net', 'password': '', 'api_key': 'SFNSQz1SS2NygIF6QlBR', 'api_key_param': 'key', 'engine': 'api_key', 'data_path': '/smsreport', 'admin_id': None},
     {'id': 'd34527', 'host': '151.80.19.204', 'base_url': 'http://151.80.19.204/ints', 'url_hint': 'http://151.80.19.204/ints/agent/SMSCDRStats', 'username': 'Atik9898', 'password': 'Atik9898', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': 6664150885},
     {'id': 'd39020', 'host': '139.99.69.196', 'base_url': 'http://139.99.69.196/ints', 'url_hint': 'http://139.99.69.196/ints/agent/SMSCDRStats', 'username': 'Mahofuza12', 'password': 'Mahofuza12', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': 6664150885},
     {'id': 'd42653', 'host': '54.39.104.241', 'base_url': 'http://54.39.104.241/ints', 'url_hint': 'http://54.39.104.241/ints/agent/SMSCDRStats', 'username': 'Rabbi5', 'password': 'Rabbi5', 'engine': 'ints_smsranges', 'data_path': '/agent/res/data_smsranges.php', 'admin_id': 6664150885},
-    {'id': 'd26084', 'host': '91.232.105.47', 'base_url': 'http://91.232.105.47/ints', 'url_hint': 'http://91.232.105.47/ints/agent/SMSCDRStats', 'username': 'Mahofuza', 'password': 'Mahofuza12@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': 6664150885},
+    {'id': 'd6180', 'host': '91.232.105.47', 'base_url': 'http://91.232.105.47/ints', 'url_hint': 'http://91.232.105.47/ints/agent/SMSCDRStats', 'username': 'Mahofuza', 'password': 'Mahofuza12@', 'engine': 'ints_smscdr', 'data_path': '/agent/res/data_smscdr.php', 'admin_id': 6664150885},
 ]
 # <<SYNC:_BUILTIN_PANELS:END>>
 
@@ -268,6 +268,7 @@ _group_settings = load_json(GROUP_SETTINGS_FILE, {
     'bot_link': 'https://t.me/hot_otp_bot',
     'support_id': '',
     'group_otp_send': True,
+    'group_tag': 'ATIK',
 })
 # <<SYNC:_group_settings_defaults:END>>
 
@@ -321,6 +322,10 @@ def get_bot_link():
     return _group_settings.get("bot_link", "")
 
 
+def get_group_tag():
+    return _group_settings.get("group_tag", "BOT")
+
+
 def is_auto_delete():
     return _group_settings.get("auto_delete", True)
 
@@ -340,8 +345,8 @@ TEMPLATES_FILE = "message_templates.json"
 # <<SYNC:_DEFAULT_TEMPLATES:START>>
 _DEFAULT_TEMPLATES = {
     'start': '🔥 <b>𝗔𝗥 𝗢𝗧𝗣 𝗕𝗢𝗧-𝗲 𝗦𝗔𝗚𝗢𝗧𝗢𝗠!</b> 🔥\n\n╔═════════════════════════════╗\n   🧾 <b>USER DASHBOARD</b>\n╠═════════════════════════════╣\n  👤 <b>User:</b> {uname}\n  🆔 <b>ID:</b> <code>{uid}</code>\n  📊 <b>Status:</b> 💎 Premium\n  🚀 <b>Workers:</b> 0\n╚═════════════════════════════╝\n\n╔══════════════════╗\n 𝗡𝗶𝗰𝗵𝗲𝗿 𝗰𝗵𝗮𝗻𝗻𝗲𝗹𝗲 <b>𝗝𝗢𝗜𝗡</b> 𝗵𝗼𝘆𝗲\n <b>𝗩𝗘𝗥𝗜𝗙𝗬</b> 𝗯𝗮𝘁𝗮𝗻𝗲 𝗰𝗹𝗶𝗰𝗸 𝗸𝗼𝗿𝗼!\n╚══════════════════╝\n\n🤖 <i>𝙋𝙤𝙬𝙚𝙧𝙚𝙙 𝙗𝙮</i>  <b>𝗔𝗥 𝗢𝗧𝗣 𝗕𝗢𝗧</b>',
-    'otp_group': '🌟══════════════🌟\n\xa0\xa0 🥵মাল আইছে রে🥵\n\n⚙️ Service: {svc}\n☎️ Number: {number}\n🌍 Country: {country} {flag}\n\n📲 OTP Code: {otp}\n\n📬 Massage: {sms}\n🌟══════════════🌟\n🌟 🅐🆃🅸🅺 🅾️🆃🅿️ 🅱️🅾️🆃 🌟',
-    'otp_dm': '📱 <b><i>{svc}</i></b>{flag} | {number} | {flag}\n\n🔑 <b>KEY</b> : <b><i>{otp}</i></b>\n\n╭─────────────────╮\n📩 <b>MESSAGE</b>\n\n<i>{sms}</i>\n╰─────────────────╯\n💬 <i>Thanks for using</i> <b>@hot_otp_bot</b>',
+    'otp_group': '📱 <b><i>{svc}</i></b>{flag} | {tagged_number} | {flag}\n\n🔑 <b>KEY</b> : <b><i>{otp}</i></b>\n\n╭─────────────────╮\n📩 <b>MESSAGE</b>\n\n<i>{sms_body}</i>\n╰─────────────────╯\n💬 <i>Thanks for using</i> <b>@hot_otp_bot</b>',
+    'otp_dm': '📱 {svc} | {number} | {flag}\n\xa0 👀তোর কোড আইছে রে👀\n\n🔑 Key: {otp}\n\n💬 Thanks for using @hot_otp_bot',
     'verify_success': '🔥 <b>VERIFICATION COMPLETE!</b> 🔥\n\n╔═════════════════════════════╗\n   ✅ <b>ACCESS GRANTED</b>\n╠═════════════════════════════╣\n  👋 <b>Welcome, {vname}!</b>\n  🆔 <b>ID:</b> <code>{uid}</code>\n  📊 <b>Status:</b> 💎 Premium\n╚═════════════════════════════╝\n\n⚡ <b>𝗘𝗸𝗸𝗵𝗼𝗻 𝗻𝘂𝗺𝗯𝗮𝗿 𝗻𝗶𝘁𝗲 𝗽𝗮𝗿𝗯𝗲!</b> ⚡',
     'number_assigned': '✅ <b>Number Assigned Successfully !</b>\n\n🔧 <b>Platform :</b> {svc}\n🌍 <b>Country :</b> {flag} {country}\n\n📞 <b>Number :</b> <code>{number}</code>\n\n⏱ <b>Auto code fetch :</b> 10:00s',
     'broadcast': '🔥 <b>𝗔𝗥 𝗢𝗧𝗣 𝗕𝗢𝗧 — 𝗕𝗥𝗢𝗔𝗗𝗖𝗔𝗦𝗧!</b> 🔥\n⚡━━━━━━━━━━━━━━━━⚡\n\n📢 {text} 📢\n\n⚡━━━━━━━━━━━━━━━━⚡\n🤖🔥 <i>𝙋𝙤𝙬𝙚𝙧𝙚𝙙 𝙗𝙮</i>  <b>𝗔𝗥 𝗢𝗧𝗣 𝗕𝗢𝗧</b>  🔥🤖',
@@ -468,8 +473,8 @@ _TEMPLATE_LABELS = {
 
 _TEMPLATE_VARS = {
     "start": "{uname} = ইউজার নাম, {uid} = ইউজার আইডি",
-    "otp_group": "{svc} = সার্ভিস, {number} = নম্বর, {country} = দেশ, {flag} = ফ্ল্যাগ, {otp} = OTP কোড, {sms} = পূর্ণ SMS টেক্সট",
-    "otp_dm": "{svc} = সার্ভিস, {number} = নম্বর, {country} = দেশ, {flag} = ফ্ল্যাগ, {otp} = OTP কোড, {sms} = পূর্ণ SMS টেক্সট",
+    "otp_group": "{svc} = সার্ভিস, {number} = নম্বর, {tagged_number} = TAG সহ নম্বর, {country} = দেশ, {flag} = ফ্ল্যাগ, {otp} = OTP কোড, {sms_body} = পুরো SMS",
+    "otp_dm": "{svc} = সার্ভিস, {number} = নম্বর, {country} = দেশ, {flag} = ফ্ল্যাগ, {otp} = OTP কোড, {sms_body} = পুরো SMS",
     "verify_success": "{vname} = ইউজার নাম, {uid} = ইউজার আইডি",
     "number_assigned": "{svc} = সার্ভিস, {country} = দেশ, {flag} = ফ্ল্যাগ, {number} = নম্বর",
     "broadcast": "{text} = broadcast content",
@@ -525,15 +530,18 @@ def register_number(user_id, number):
 
 
 def mask_number(number):
-    s = re.sub(r"\D", "", str(number))
-    _bold = lambda t: "".join(
-        chr(0x1D5D4 + ord(c) - 65) if 'A' <= c <= 'Z' else
-        chr(0x1D5EE + ord(c) - 97) if 'a' <= c <= 'z' else c
-        for c in str(t)
-    )
-    if len(s) >= 7:
-        return f"{s[:3]}⚜{_bold('ATIK')}⚜{s[-4:]}"
-    return s
+    s = str(number)
+    if len(s) <= 9:
+        return s[:3] + "***" + s[-3:]
+    return s[:6] + "***" + s[-3:]
+
+
+def tag_number(number, tag):
+    """Format number as: first3⚜<b>TAG</b>⚜last4  e.g. 245⚜<b>ATIK</b>⚜5660"""
+    clean = re.sub(r"\D", "", str(number))
+    if len(clean) >= 7:
+        return f"{clean[:3]}⚜<b>{tag}</b>⚜{clean[-4:]}"
+    return clean
 
 
 # ── OTP Messages ──────────────────────────────────────────────────────────────
@@ -573,14 +581,15 @@ def _send_with_retry(fn, max_retries=3, **kwargs):
     return None, last_wait
 
 
-def send_otp_message(chat_id, otp, number, seconds, service="", sms=""):
+def send_otp_message(chat_id, otp, number, seconds, service="", sms_body=""):
     svc = service.upper() if service else "—"
     c_name, flag = get_country_details(number)
     otp_str = str(otp)
-    sms_str = str(sms) if sms else "—"
-    _grp_vars = dict(svc=svc, number=mask_number(number), country=c_name, flag=flag, otp=otp_str, sms=sms_str)
+    _tag = get_group_tag()
+    _grp_vars = dict(svc=svc, number=mask_number(number), tagged_number=tag_number(number, _tag),
+                     country=c_name, flag=flag, otp=otp_str, sms_body=sms_body or "—")
     _dm_vars  = dict(svc=svc, number=(number if str(number).startswith("+") else "+" + str(number)),
-                     country=c_name, flag=flag, otp=otp_str, sms=sms_str)
+                     country=c_name, flag=flag, otp=otp_str, sms_body=sms_body or "—")
 
     def _build_message(key, vars_dict):
         """Return (text, used_default). Falls back to default on any error."""
@@ -604,17 +613,16 @@ def send_otp_message(chat_id, otp, number, seconds, service="", sms=""):
 
     if chat_id == get_otp_group_id():
         markup = types.InlineKeyboardMarkup()
-        markup.row(
-            types.InlineKeyboardButton(
-                f"📋🔒 {otp_str}",
-                copy_text=types.CopyTextButton(text=otp_str)
-            )
-        )
+        # Copy OTP button — clicking copies the code to clipboard
+        markup.add(types.InlineKeyboardButton(
+            f"🔒 {otp_str}",
+            copy_text=types.CopyTextButton(text=otp_str)
+        ))
         _btns = []
         if get_bot_link():
-            _btns.append(types.InlineKeyboardButton("📞 𝗡𝗨𝗠𝗕𝗘𝗥 ↗", url=get_bot_link()))
+            _btns.append(types.InlineKeyboardButton("🤖 𝗡𝘂𝗺𝗯𝗲𝗿 𝗕𝗼𝘁", url=get_bot_link()))
         if get_channel2():
-            _btns.append(types.InlineKeyboardButton("📣 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 ↗", url=get_channel2()))
+            _btns.append(types.InlineKeyboardButton("📢 𝗠𝗮𝗶𝗻 𝗖𝗵𝗮𝗻𝗻𝗲𝗹", url=get_channel2()))
         if _btns:
             markup.row(*_btns)
 
@@ -639,6 +647,11 @@ def send_otp_message(chat_id, otp, number, seconds, service="", sms=""):
         uid = chat_id  # DM: chat_id == user_id
         last_svc_info = _user_last_svc.get(uid)
         dm_markup = types.InlineKeyboardMarkup(row_width=2)
+        # Copy OTP button — clicking copies the code to clipboard
+        dm_markup.add(types.InlineKeyboardButton(
+            f"🔒 {otp_str}",
+            copy_text=types.CopyTextButton(text=otp_str)
+        ))
         if last_svc_info:
             _svc, _scnt = last_svc_info
             dm_markup.add(
@@ -682,20 +695,20 @@ def is_group_otp_send_enabled():
     return _group_settings.get("group_otp_send", True)
 
 
-def _dispatch_otp(otp, number, seconds, service="", sms=""):
+def _dispatch_otp(otp, number, seconds, service="", sms_body=""):
     grp = get_otp_group_id()
     clean = re.sub(r"\D", "", str(number))
     with user_map_lock:
         uid = user_map.get(clean)
     print(f"[DISPATCH] OTP={otp} num={number} svc={service} group={grp} user_dm={uid} grp_send={is_group_otp_send_enabled()}")
     if grp and is_group_otp_send_enabled():
-        send_otp_message(grp, otp, number, seconds, service, sms=sms)
+        send_otp_message(grp, otp, number, seconds, service, sms_body)
     elif grp and not is_group_otp_send_enabled():
         print(f"[DISPATCH] ℹ️ Group OTP send is DISABLED — skipping group send (DM only mode)")
     else:
         print(f"[DISPATCH] ⚠️ No OTP group configured — skipping group send!")
     if uid:
-        send_otp_message(uid, otp, number, seconds, service, sms=sms)
+        send_otp_message(uid, otp, number, seconds, service, sms_body)
         # Track OTP receive count per user
         with otp_stats_lock:
             otp_stats[str(uid)] = otp_stats.get(str(uid), 0) + 1
@@ -875,7 +888,7 @@ seen_lock = threading.Lock()
 
 # ── Dynamic panel system ───────────────────────────────────────────────────────
 DYNAMIC_PANELS_FILE = "dynamic_panels.json"
-_dynamic_panels = load_json(DYNAMIC_PANELS_FILE, list(_BUILTIN_PANELS))
+_dynamic_panels = load_json(DYNAMIC_PANELS_FILE, [])
 _dynamic_sessions = {}
 _dynamic_locks = {}
 _addpanel_state = {}
@@ -2231,7 +2244,7 @@ def process_new_otps(current):
         with user_map_lock:
             t_start = assigned_time.get(clean)
         seconds = int(time.time() - t_start) if t_start else 0
-        _dispatch_otp(otp, number, seconds, service, sms=sms_txt)
+        _dispatch_otp(otp, number, seconds, service, sms_txt or "")
         print(
             f"[MONITOR] ✅ Forwarded OTP={otp} for {number} ({service}) in {seconds}s"
         )
@@ -2745,7 +2758,7 @@ def demo_monitor():
                     otp = "".join([str(random.randint(0, 9)) for _ in range(cfg["digits"])])
                     number = random.choice(cfg["numbers"])
                     try:
-                        send_otp_message(get_otp_group_id(), otp, number, "—", svc)
+                        send_otp_message(get_otp_group_id(), otp, number, "—", svc, "")
                     except Exception as e:
                         print(f"[DEMO] {cfg['name']} send error ({svc}): {e}")
         time.sleep(1)
@@ -2899,9 +2912,10 @@ def test_cmd(message):
     fake_number = "8801712345678"
     fake_svc = "Instagram"
     fake_secs = 12
-    send_otp_message(message.chat.id, fake_otp, fake_number, fake_secs, fake_svc)
+    fake_sms = f"Your Instagram code is {fake_otp}. Don't share this code."
+    send_otp_message(message.chat.id, fake_otp, fake_number, fake_secs, fake_svc, fake_sms)
     try:
-        send_otp_message(get_otp_group_id(), fake_otp, fake_number, fake_secs, fake_svc)
+        send_otp_message(get_otp_group_id(), fake_otp, fake_number, fake_secs, fake_svc, fake_sms)
         bot.send_message(
             message.chat.id, "✅ Group-eও pathano hoyeche!", parse_mode="HTML"
         )
@@ -3612,7 +3626,6 @@ def _iva_cookie_update_step(message):
     threading.Thread(target=_try_reconnect, daemon=True).start()
 
 
-
 # ── IVA SMS test command (/ivatest) ───────────────────────────────────────────
 
 @bot.message_handler(commands=["ivatest"])
@@ -3671,8 +3684,8 @@ def _iva_test_cmd(message):
         for number, otp, sms_txt, service in items:
             svc = service if service else "IVA"
             if grp:
-                send_otp_message(grp, otp, number, 0, svc)
-            send_otp_message(uid, otp, number, 0, svc)
+                send_otp_message(grp, otp, number, 0, svc, sms_txt or "")
+            send_otp_message(uid, otp, number, 0, svc, sms_txt or "")
 
         bot.send_message(message.chat.id,
             f"🔥 <b>Done!</b> {len(items)} ta OTP group+DM-e pathanো hoise.\n"
@@ -3840,7 +3853,7 @@ def _tp_get_pass_test(message):
         if otp_items and target_group:
             for number, otp_val, sms_txt, service in otp_items[:MAX_SEND]:
                 try:
-                    send_otp_message(target_group, otp_val, number, "—", service)
+                    send_otp_message(target_group, otp_val, number, "—", service, sms_txt or "")
                     sent_count += 1
                     time.sleep(0.4)
                 except Exception:
@@ -4799,6 +4812,23 @@ def callback_handler(call):
             save_group_settings()
             bot.answer_callback_query(call.id, "✅ Group removed!")
             _show_settings_inline(call)
+
+        elif data == "set_group_tag":
+            if call.from_user.id not in ADMIN_IDS:
+                return
+            bot.answer_callback_query(call.id)
+            cur_tag = _group_settings.get("group_tag", "BOT")
+            msg = bot.send_message(
+                call.message.chat.id,
+                f"🌸 <b>Number Tag Set/Change</b>\n\n"
+                f"🔹 <b>Bortoman Tag:</b> <code>{cur_tag}</code>\n"
+                f"📱 Preview: <b>245⚜{cur_tag}⚜5660</b>\n\n"
+                f"Notun tag dao (shudhu text, kono emoji na):\n"
+                f"<i>Example: ATIK, BOT, OTP, KING</i>",
+                reply_markup=_back_admin_kb(),
+                parse_mode="HTML",
+            )
+            bot.register_next_step_handler(msg, _sett_get_group_tag)
 
     except Exception as e:
         print(f"Callback Error: {e}")
@@ -5953,6 +5983,7 @@ def _settings_text(uid=None):
     auto_del = _group_settings.get("auto_delete", True)
     del_secs = _group_settings.get("auto_delete_seconds", 3600)
     grp_send = _group_settings.get("group_otp_send", True)
+    grp_tag = _group_settings.get("group_tag", "BOT")
     id_str = f"<code>{grp_id}</code>" if grp_id else "❌ Set hoy nai"
     link_str = grp_link or "❌ Set hoy nai"
     auto_str = f"🟢 ON ({del_secs // 60} min)" if auto_del else "🔴 OFF"
@@ -5966,7 +5997,8 @@ def _settings_text(uid=None):
         f"🔗 Link: {link_str}\n"
         f"🆔 Chat ID: {id_str}\n"
         f"⏱️ Auto Delete: {auto_str}\n"
-        f"📤 Group OTP Send: {grp_send_str}\n\n"
+        f"📤 Group OTP Send: {grp_send_str}\n"
+        f"⚜ Number Tag: <b>{grp_tag}</b> (245⚜{grp_tag}⚜5660)\n\n"
         "📢 <b>LINKS</b>\n"
         f"📢 Join Channel: {ch2_str}\n"
         f"🤖 Bot Link: {bot_str}\n\n"
@@ -5978,6 +6010,7 @@ def _settings_text(uid=None):
 def _settings_markup():
     auto_del = _group_settings.get("auto_delete", True)
     grp_send = _group_settings.get("group_otp_send", True)
+    grp_tag = _group_settings.get("group_tag", "BOT")
     auto_label = "⏱️ Auto Delete: 🟢 ON" if auto_del else "⏱️ Auto Delete: 🔴 OFF"
     grp_send_label = "📤 Group Send: 🟢 ON" if grp_send else "📤 Group Send: 🔴 OFF"
     markup = types.InlineKeyboardMarkup(row_width=2)
@@ -5991,6 +6024,9 @@ def _settings_markup():
     )
     markup.add(
         types.InlineKeyboardButton(grp_send_label, callback_data="toggle_grp_send"),
+    )
+    markup.add(
+        types.InlineKeyboardButton(f"⚜ Number Tag: {grp_tag}", callback_data="set_group_tag"),
     )
     markup.add(
         types.InlineKeyboardButton("📢 Join Channel", callback_data="set_channel2"),
@@ -6182,6 +6218,36 @@ def _sett_get_support_id(message):
     )
 
 
+def _sett_get_group_tag(message):
+    uid = message.from_user.id
+    if uid not in ADMIN_IDS:
+        return
+    if _is_back(message.text):
+        _go_admin_panel(message)
+        return
+    if _intercept_menu_btn(message):
+        return
+    val = (message.text or "").strip().upper()
+    if not val or len(val) > 20:
+        msg = bot.send_message(
+            message.chat.id,
+            "❌ Valid tag dao (max 20 char):\n<i>Example: ATIK, BOT, KING</i>",
+            reply_markup=_back_admin_kb(),
+            parse_mode="HTML",
+        )
+        bot.register_next_step_handler(msg, _sett_get_group_tag)
+        return
+    _group_settings["group_tag"] = val
+    save_group_settings()
+    _go_admin_panel(
+        message,
+        f"✅ <b>NUMBER TAG UPDATED!</b>\n\n"
+        f"⚜ <b>Notun Tag:</b> <code>{val}</code>\n"
+        f"📱 Preview: <b>245⚜{val}⚜5660</b>\n\n"
+        f"<i>Ekhon theke group-e number ei format-e dekhabe!</i>",
+    )
+
+
 _pending_admin_uid = {}  # {requester_uid: new_uid}
 
 
@@ -6368,7 +6434,7 @@ def _resend_old_otps(message):
             if _resend_stop:
                 break
             try:
-                send_otp_message(grp, otp_val, number, "—", service)
+                send_otp_message(grp, otp_val, number, "—", service, sms_txt or "")
                 sent += 1
                 time.sleep(0.4)
             except Exception as e:
@@ -6673,45 +6739,182 @@ def _after_add_handler(message, last_svc):
 
 
 
+# ── Start ─────────────────────────────────────────────────────────────────────
 
-# ── Startup: launch all builtin + dynamic panels ──────────────────────────────
+try:
+    requests.get(
+        f"https://api.telegram.org/bot{API_TOKEN}/deleteWebhook?drop_pending_updates=true",
+        timeout=10,
+    )
+    print("[START] Webhook cleared.")
+except Exception as e:
+    print(f"[START] Webhook clear failed: {e}")
 
-def _launch_all_panels():
-    """Start monitor threads for every panel (builtin + dynamic)."""
-    seen_ids = set()
-    all_panels = list(_dynamic_panels)
-    for p in _BUILTIN_PANELS:
-        if p.get("id") not in [x.get("id") for x in _dynamic_panels]:
-            all_panels.append(p)
-    for panel in all_panels:
-        pid = panel.get("id", "")
-        if pid in seen_ids:
-            continue
-        seen_ids.add(pid)
-        engine = panel.get("engine", "")
-        if engine == "iva_sms":
-            threading.Thread(target=lambda p=panel: _iva_login(p), daemon=True).start()
-        else:
-            _start_dynamic_panel(panel)
-    print(f"[START] ✅ {len(seen_ids)} panel monitor(s) launched.")
+time.sleep(3)
+
+threading.Thread(target=panel1_monitor, daemon=True).start()
+threading.Thread(target=panel2_monitor, daemon=True).start()
+threading.Thread(target=panel3_monitor, daemon=True).start()
+threading.Thread(target=panel4_monitor, daemon=True).start()
+threading.Thread(target=panel5_monitor, daemon=True).start()
+threading.Thread(target=panel6_monitor, daemon=True).start()
+threading.Thread(target=demo_monitor, daemon=True).start()
+
+for _dp in _dynamic_panels:
+    _start_dynamic_panel(_dp)
+    print(f"[DYN] Loaded saved panel: {_dp['id']} ({_dp['host']})")
+
+# ── Load builtin extra panels (hardcoded) ─────────────────────────────────────
+_existing_bp_ids = {p["id"] for p in _dynamic_panels}
+for _bp in _BUILTIN_PANELS:
+    if _bp["id"] not in _existing_bp_ids:
+        _dynamic_panels.append(_bp)
+        save_dynamic_panels()
+    _start_dynamic_panel(_bp)
+    print(f"[BUILTIN] Loaded panel: {_bp['id']} ({_bp['host']} / {_bp['username']})")
+
+# ── IVA SMS startup login check ───────────────────────────────────────────────
+def _iva_startup_check():
+    """After bot starts, try to login to IVA panel. If fails, notify admins."""
+    time.sleep(15)  # wait for bot polling to start
+    iva = _iva_find_panel()
+    if not iva:
+        return
+    pid = iva["id"]
+    # If already logged in (scraper exists), skip
+    if _iva_scrapers.get(pid):
+        return
+    print(f"[IVA-STARTUP] Trying initial login for {pid}...")
+    ok = _iva_login(iva)
+    if ok:
+        print(f"[IVA-STARTUP] ✅ IVA panel login OK")
+        return
+    # Login failed — notify all super admins
+    print(f"[IVA-STARTUP] ❌ IVA panel login FAILED — notifying admins")
+    for admin_uid in SUPER_ADMIN_IDS:
+        try:
+            bot.send_message(
+                admin_uid,
+                "⚠️ <b>IVA SMS Panel (bp10) login hoi nai!</b>\n\n"
+                "Railway-er IP theke email/password login block hoye ache (Cloudflare).\n\n"
+                "🍪 <b>Cookie diye fix koro:</b>\n"
+                "1. Phone/PC-te Chrome-e <b>ivasms.com</b> login koro\n"
+                "2. Browser-er Developer Tools open koro\n"
+                "   • PC: F12 → Application → Cookies → ivasms.com\n"
+                "   • Phone: Chrome menu → Desktop site, tahole F12\n"
+                "3. <code>laravel_session</code> cookie-er value copy koro\n"
+                "4. Bot-e pathao: /ivacookie\n\n"
+                "<i>Command: <code>/ivacookie bp10</code></i>",
+                parse_mode="HTML",
+            )
+        except Exception as e:
+            print(f"[IVA-STARTUP] Notify error for {admin_uid}: {e}")
+
+threading.Thread(target=_iva_startup_check, daemon=True).start()
 
 
-if __name__ == "__main__":
-    if not API_TOKEN:
-        print("❌ ERROR: TELEGRAM_BOT_TOKEN env var not set. Exiting.")
-        import sys
-        sys.exit(1)
+# ── Web helper cookie watcher ──────────────────────────────────────────────
+import json as _json_mod
 
-    print("[START] 🤖 AR OTP BOT starting...")
+_IVA_COOKIE_PENDING_FILE = os.path.join(os.path.dirname(__file__), "iva_cookie_pending.txt")
 
-    # Remove any leftover webhook
+
+def _iva_web_cookie_watcher():
+    """Watches for cookie file written by the web helper page and applies it."""
+    while True:
+        try:
+            if os.path.exists(_IVA_COOKIE_PENDING_FILE):
+                with open(_IVA_COOKIE_PENDING_FILE, "r") as _f:
+                    _data = _json_mod.load(_f)
+                os.remove(_IVA_COOKIE_PENDING_FILE)
+                _panel_id = _data.get("panel", "bp10")
+                _cookie_str = _data.get("cookie", "").strip()
+                if _cookie_str and "=" in _cookie_str:
+                    print(f"[WEB-COOKIE] Got cookie for {_panel_id} via helper page")
+                    # Update dynamic_panels
+                    for _p in _dynamic_panels:
+                        if _p["id"] == _panel_id:
+                            _p["cookie_str"] = _cookie_str
+                            save_dynamic_panels()
+                            break
+                    # Update BUILTIN_PANELS in-memory
+                    for _p in _BUILTIN_PANELS:
+                        if _p["id"] == _panel_id:
+                            _p["cookie_str"] = _cookie_str
+                            break
+                    _iva_scrapers.pop(_panel_id, None)
+                    # Try to reconnect
+                    _panel_obj = _iva_find_panel(_panel_id)
+                    if _panel_obj:
+                        ok = _iva_login(_panel_obj)
+                        status = "✅ Login SUCCESSFUL! OTP ashle group-e pathabe." if ok else "❌ Cookie kaj koreni — abar try koro."
+                        print(f"[WEB-COOKIE] {_panel_id}: {status}")
+                        for _admin in SUPER_ADMIN_IDS:
+                            try:
+                                bot.send_message(_admin,
+                                    f"🍪 <b>Web Helper Cookie — {_panel_id}</b>\n{status}",
+                                    parse_mode="HTML")
+                            except Exception:
+                                pass
+        except Exception as _e:
+            print(f"[WEB-COOKIE] Error: {_e}")
+        time.sleep(10)
+
+
+threading.Thread(target=_iva_web_cookie_watcher, daemon=True).start()
+
+print("🔥 AR OTP BOT is running with 15-PANEL AUTO OTP MONITOR... 🔥")
+print("   ▸ Panel 1: Mahofuza        (91.232.105.47)")
+print("   ▸ Panel 2: Sagardas50      (94.23.31.29)")
+print("   ▸ Panel 3: Rabbi1_FD       (168.119.13.175)")
+print("   ▸ Panel 4: Rabbi12         (144.217.71.192)")
+print("   ▸ Panel 5: Rabbi12_v2      (51.75.144.178)")
+print("   ▸ Panel 6: TrueSMS/Ranges  (truesms.net)")
+print("   ▸ BP1: Mahofuza12          (139.99.69.196)")
+print("   ▸ BP2: Rabbi12             (139.99.9.4)")
+print("   ▸ BP3: Rabbi12             (54.36.173.235)")
+print("   ▸ BP4: Rabbi5              (54.39.104.241)")
+print("   ▸ BP5: mahofuza            (213.32.24.208)")
+print("   ▸ BP6: Rabbi200            (15.235.182.3 /konekta)")
+print("   ▸ BP7: Rabbi12             (nexor-iprn.com)")
+print("   ▸ BP8: Rabbi12             (51.77.52.79)")
+print("   ▸ BP9: Dasbabu50_FD        (51.210.208.26)")
+print("   ▸ BP10: mdrashub2          (ivasms.com)")
+print("   ▸ BP11: Rabbi12            (139.99.68.231)")
+
+
+def _clear_webhook():
     try:
-        bot.remove_webhook()
+        requests.get(
+            f"https://api.telegram.org/bot{API_TOKEN}/deleteWebhook?drop_pending_updates=true",
+            timeout=10,
+        )
     except Exception:
         pass
 
-    # Launch all panel monitors
-    _launch_all_panels()
 
-    print("[START] 🚀 Bot polling started. Waiting for messages...")
-    bot.infinity_polling(timeout=60, long_polling_timeout=30)
+while True:
+    try:
+        _clear_webhook()
+        time.sleep(3)
+        bot.infinity_polling(
+            timeout=60,
+            long_polling_timeout=60,
+            allowed_updates=["message", "callback_query"],
+            none_stop=True,
+            restart_on_change=False,
+        )
+    except requests.exceptions.ReadTimeout:
+        print("[POLLING] ReadTimeout — restarting in 5s...")
+        time.sleep(5)
+    except requests.exceptions.ConnectionError:
+        print("[POLLING] ConnectionError — restarting in 10s...")
+        time.sleep(10)
+    except Exception as e:
+        err_str = str(e)
+        if "409" in err_str or "Conflict" in err_str:
+            print("[POLLING] 409 Conflict (another instance running) — waiting 30s...")
+            time.sleep(30)
+        else:
+            print(f"[POLLING] Error: {e} — restarting in 5s...")
+            time.sleep(5)
